@@ -114,6 +114,10 @@ func _restore_run() -> bool:
 
 func _toggle_settings() -> void:
 	settings_panel.visible = not settings_panel.visible
+	if settings_panel.visible:
+		ambience_slider.grab_focus()
+	else:
+		settings_button.grab_focus()
 
 func _load_settings() -> void:
 	var settings := SettingsStore.load_settings()
@@ -357,21 +361,36 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "S U R V I V A L   2 1"
 	title.add_theme_font_size_override("font_size", 25)
+	title.accessibility_name = "Survival 21"
+	title.accessibility_description = "Horror survival blackjack game. Play hands to escape the table."
 	column.add_child(title)
 	status_label = Label.new()
 	status_label.text = "The table is waiting."
+	status_label.accessibility_name = "Game status"
+	status_label.accessibility_description = "Announces the current round, game events, and results."
+	status_label.accessibility_live = 1
 	column.add_child(status_label)
 	dealer_label = Label.new()
+	dealer_label.accessibility_name = "Dealer hand"
+	dealer_label.accessibility_description = "Dealer card count and total. A question mark means the hole card is hidden."
 	column.add_child(dealer_label)
 	player_label = Label.new()
+	player_label.accessibility_name = "Your hand"
+	player_label.accessibility_description = "Your current card total, card count, and wager."
 	column.add_child(player_label)
 	chips_label = Label.new()
+	chips_label.accessibility_name = "Chips"
+	chips_label.accessibility_description = "Your available virtual chips. Chips have no real-money value."
 	column.add_child(chips_label)
 	opponent_label = Label.new()
+	opponent_label.accessibility_name = "Current opponent"
 	column.add_child(opponent_label)
 	event_label = Label.new()
+	event_label.accessibility_name = "Current table event"
 	column.add_child(event_label)
 	survival_label = Label.new()
+	survival_label.accessibility_name = "Survival progress"
+	survival_label.accessibility_description = "Remaining hearts, wins needed to escape, and losses."
 	column.add_child(survival_label)
 
 	var actions := HBoxContainer.new()
@@ -418,6 +437,8 @@ func _build_ui() -> void:
 	settings_panel.add_child(settings_column)
 	var settings_title := Label.new()
 	settings_title.text = "AUDIO SETTINGS"
+	settings_title.accessibility_name = "Settings"
+	settings_title.accessibility_description = "Audio, display scale, and contrast options."
 	settings_column.add_child(settings_title)
 	var ambience_label := Label.new()
 	ambience_label.text = "AMBIENCE VOLUME"
@@ -427,6 +448,8 @@ func _build_ui() -> void:
 	ambience_slider.max_value = 100
 	ambience_slider.step = 1
 	ambience_slider.custom_minimum_size = Vector2(260, 32)
+	ambience_slider.accessibility_name = "Ambience volume"
+	ambience_slider.accessibility_description = "Adjust background horror ambience from zero to one hundred percent."
 	ambience_slider.value_changed.connect(_on_ambience_volume_changed)
 	settings_column.add_child(ambience_slider)
 	var effects_label := Label.new()
@@ -437,6 +460,8 @@ func _build_ui() -> void:
 	effects_slider.max_value = 100
 	effects_slider.step = 1
 	effects_slider.custom_minimum_size = Vector2(260, 32)
+	effects_slider.accessibility_name = "Sound effects volume"
+	effects_slider.accessibility_description = "Adjust card, result, and item sound effects from zero to one hundred percent."
 	effects_slider.value_changed.connect(_on_effects_volume_changed)
 	settings_column.add_child(effects_slider)
 	var scale_label := Label.new()
@@ -447,10 +472,14 @@ func _build_ui() -> void:
 	ui_scale_slider.max_value = 1.3
 	ui_scale_slider.step = 0.05
 	ui_scale_slider.custom_minimum_size = Vector2(260, 32)
+	ui_scale_slider.accessibility_name = "Interface scale"
+	ui_scale_slider.accessibility_description = "Resize the game interface from eighty to one hundred and thirty percent."
 	ui_scale_slider.value_changed.connect(_on_ui_scale_changed)
 	settings_column.add_child(ui_scale_slider)
 	high_contrast_toggle = CheckButton.new()
 	high_contrast_toggle.text = "HIGH CONTRAST"
+	high_contrast_toggle.accessibility_name = "High contrast"
+	high_contrast_toggle.accessibility_description = "Increase text contrast for improved readability."
 	high_contrast_toggle.toggled.connect(_on_high_contrast_toggled)
 	settings_column.add_child(high_contrast_toggle)
 	var close_settings := _make_button("CLOSE", _toggle_settings)
@@ -460,6 +489,8 @@ func _build_ui() -> void:
 	hint.text = "H Hit | S Stand | D Double | N Next | M Mark | B Bell  •  Pad: A/B/X/Y, LB/RB, Start"
 	hint.add_theme_color_override("font_color", Color(0.72, 0.78, 0.75))
 	column.add_child(hint)
+	_link_focus_order([hit_button, stand_button, double_button, deal_button, medkit_button, marked_button, bell_button, settings_button, archive_button, restart_button])
+	_link_focus_order([ambience_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
 	hit_button.grab_focus()
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
@@ -470,8 +501,39 @@ func _make_button(caption: String, callback: Callable) -> Button:
 	button.custom_minimum_size = Vector2(86, 42)
 	button.focus_mode = Control.FOCUS_ALL
 	button.tooltip_text = caption
+	button.accessibility_name = caption.capitalize()
+	button.accessibility_description = _button_accessibility_description(caption)
 	button.pressed.connect(callback)
 	return button
+
+func _button_accessibility_description(caption: String) -> String:
+	match caption:
+		"HIT":
+			return "Draw one card. Your hand ends automatically if it goes over twenty one."
+		"STAND":
+			return "Keep your current total and let the dealer play."
+		"DOUBLE":
+			return "Double your current wager, draw one final card, and end your turn."
+		"NEXT HAND":
+			return "Start the next blackjack hand."
+		"MEDKIT (75)":
+			return "Spend seventy five virtual chips to restore one heart. Usable once per run."
+		"SETTINGS":
+			return "Open audio volume, interface scale, and high contrast options."
+		"ARCHIVE (0/6)":
+			return "View unlocked survival lore and lifetime achievements."
+		"RESTART RUN":
+			return "Discard the current run and start a new run with five hundred chips."
+		"CLOSE":
+			return "Close settings and return focus to the game."
+		_:
+			return "Use the current tactical item. " + caption.capitalize()
+
+func _link_focus_order(controls: Array[Control]) -> void:
+	for index in range(controls.size()):
+		var current := controls[index]
+		var next := controls[(index + 1) % controls.size()]
+		current.focus_next = current.get_path_to(next)
 
 func _create_deck() -> void:
 	deck.clear()
@@ -637,6 +699,15 @@ func _finish_round() -> void:
 func _show_archive() -> void:
 	archive_dialog.dialog_text = progression.archive_text()
 	archive_dialog.popup_centered()
+	for node in archive_dialog.find_children("*", "Label", true, false):
+		var archive_label := node as Label
+		archive_label.accessibility_name = "Survival archive entries"
+		archive_label.accessibility_description = archive_dialog.dialog_text
+	for node in archive_dialog.find_children("*", "Button", true, false):
+		var dialog_button := node as Button
+		dialog_button.accessibility_name = "Close survival archive"
+		dialog_button.accessibility_description = "Close the archive and return to the Archive button."
+		dialog_button.grab_focus()
 
 func _render_cards() -> void:
 	for child in cards_root.get_children():
@@ -685,3 +756,10 @@ func _update_ui() -> void:
 	bell_button.disabled = not round_active or items.house_bells <= 0 or house_bell_active
 	restart_button.visible = not round_active and (survival.finished or chips <= 0)
 	archive_button.text = "ARCHIVE (%d/6)" % progression.unlocked_count()
+	status_label.accessibility_name = status_label.text
+	dealer_label.accessibility_name = dealer_label.text
+	player_label.accessibility_name = player_label.text
+	chips_label.accessibility_name = chips_label.text
+	opponent_label.accessibility_name = opponent_label.text
+	event_label.accessibility_name = event_label.text
+	survival_label.accessibility_name = survival_label.text

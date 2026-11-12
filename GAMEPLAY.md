@@ -109,6 +109,16 @@ All game buttons are keyboard-focusable and expose tooltips.
 
 ## Screen reader support
 
+- Godot 4.7.2 includes AccessKit screen-reader integration.
+- Gameplay status is exposed as a polite live region so hand results and round changes can be announced without moving focus.
+- Dealer hand, player hand, chips, opponent, encounter event, and survival progress labels expose descriptive accessibility names.
+- Buttons, sliders, and the high-contrast toggle expose accessible names and action descriptions.
+- Keyboard/gamepad focus follows a deliberate order through gameplay controls and settings; opening settings moves focus into the panel and closing returns it to the Settings button.
+- Archive dialog content and its close action expose accessible descriptions.
+- TalkBack and NVDA behavior still requires interactive validation on their target devices.
+
+## Screen reader support
+
 - Engine upgraded to Godot 4.7.2, which includes AccessKit integration.
 - Accessible names, descriptions, focus order, and live announcements are being added to the gameplay controls and status labels.
 - Screen-reader behavior still requires validation with TalkBack on Android and NVDA on Windows; CI cannot substitute for those interactive assistive-technology tests.

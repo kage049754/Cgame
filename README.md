@@ -16,7 +16,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
 - Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic reacts to encounter events and round outcomes with Idle, Idle_Attack, HitReact, Punch, and Death animations.
 - Original procedural horror ambience and synthesized card, win, loss, and item sound effects.
-- In-game settings for ambience/effects volume, UI scaling (80%–130%), and high-contrast text; preferences persist.
+- In-game settings for ambience/effects volume, UI scaling (80%–130%), and high-contrast text; preferences persist. Godot 4.7.2 AccessKit support adds accessible names, descriptions, focus order, and polite live game-status announcements.
 - Persistent six-entry survival archive with lifetime statistics, lore unlocks, and achievement tracking across runs.
 - Save migration from version 1 to version 2, preserving existing run data and filling missing fields.
 - Automated blackjack, survival, opponent AI, item, event, save/load, animation, audio, and settings tests.
@@ -43,7 +43,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Audio volume settings and persistence.
 - [x] Outcome-reactive zombie behavior and animation tests.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
-- [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [ ] Verify TalkBack/screen-reader behavior, performance, and physical-device input.
+- [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [x] Add AccessKit labels/descriptions to gameplay and settings controls, logical keyboard focus order, and polite live game-status announcements; CI metadata test added.\n- [ ] Verify TalkBack/screen-reader behavior on physical Android, NVDA on Windows, performance, and physical-device input.
 - [x] Upgrade to Godot 4.7.2 to enable AccessKit-based screen-reader support; add accessible names, descriptions, and live announcements, then verify TalkBack/NVDA.
 - [ ] Performance profiling, physical-device QA, production signing, and release packaging.
 

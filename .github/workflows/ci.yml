@@ -38,6 +38,7 @@ jobs:
           test -f scripts/accessibility_layout.gd
           test -f assets/icon.svg
           test -f tests/settings_test.gd
+          test -f tests/accessibility_test.gd
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb
           test -f assets/enemies/quaternius_zombie_basic.gltf
@@ -56,6 +57,8 @@ jobs:
         run: godot --headless --path . --script res://tests/run_tests.gd
       - name: Verify settings persistence
         run: godot --headless --path . --script res://tests/settings_test.gd
+      - name: Verify screen-reader metadata and focus flow
+        run: godot --headless --path . --script res://tests/accessibility_test.gd
       - name: Verify procedural audio generation
         run: godot --headless --path . --script res://tests/audio_generation_test.gd
       - name: Verify Quaternius zombie animations

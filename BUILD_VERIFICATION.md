@@ -69,3 +69,9 @@ The project still uses Godot 4.7.2 at this build. Godot 4.4 is end-of-life, and 
 - Godot engine and export templates upgraded to 4.7.2 stable.
 - Android SDK baseline upgraded to Platform 35, Build Tools 35.0.1, and NDK 28.1.13356709 as required by the Godot 4.7 export documentation.
 - AccessKit-based screen-reader integration is available in this engine line; project-level accessible labels and live announcements are the next implementation step.
+
+## Accessibility metadata implementation
+
+- AccessKit labels/descriptions, polite live game-status announcements, and explicit focus navigation are implemented in the UI.
+- CI includes a headless accessibility metadata test. This verifies property assignment and focus paths, not the spoken output of TalkBack or NVDA.
+- Interactive TalkBack/NVDA validation remains pending.
