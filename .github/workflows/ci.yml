@@ -25,9 +25,45 @@ jobs:
           test -f scripts/blackjack_rules.gd
           test -f scripts/main.gd
           test -f scripts/survival_run.gd
+          test -f export_presets.cfg
       - name: Import project
         run: godot --headless --editor --path . --quit
-      - name: Run blackjack rule tests
+      - name: Run gameplay rule tests
         run: godot --headless --path . --script res://tests/run_tests.gd
       - name: Headless scene smoke test
         run: timeout 20s godot --headless --path . --quit-after 5
+
+  android-debug-apk:
+    name: Android arm64 debug APK
+    runs-on: ubuntu-latest
+    needs: blackjack-tests
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Import project
+        run: godot --headless --editor --path . --quit
+      - name: Verify Android export toolchain
+        run: |
+          test -d "$ANDROID_HOME"
+          java -version
+          godot --headless --path . --export-release "Android" /tmp/export-check.apk --verbose 2>&1 | tee /tmp/android-export-check.log || {
+            cat /tmp/android-export-check.log
+            exit 1
+          }
+          test -s /tmp/export-check.apk
+      - name: Export Android APK
+        run: |
+          mkdir -p build
+          godot --headless --path . --export-debug "Android" build/Survival21.apk
+          test -s build/Survival21.apk
+          unzip -t build/Survival21.apk
+          unzip -l build/Survival21.apk | grep -E 'lib/arm64-v8a/.*\.so'
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Survival21-Android-arm64-debug
+          path: build/Survival21.apk
+          if-no-files-found: error
+          retention-days: 14
