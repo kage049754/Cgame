@@ -14,7 +14,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
 - Encounter events: Restless Dealer forces soft-17 draws, House Favor rewards pushes, Blood Toll taxes losses, Whispering Table rewards wins, Rust Storm taxes player busts, and Dealer's Debt rewards dealer busts.
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
-- Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic reacts to encounter events and round outcomes with Idle, Idle_Attack, HitReact, Punch, and Death animations.
+- Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic reacts to encounter events and round outcomes with Idle, Idle_Attack, HitReact, Punch, and Death animations; its threat level changes its position as it approaches or retreats from the table.
 - Original procedural horror ambience and synthesized card, win, loss, and item sound effects.
 - In-game settings for ambience/effects volume, UI scaling (80%–130%), and high-contrast text; preferences persist. Godot 4.7.2 AccessKit support adds accessible names, descriptions, focus order, and polite live game-status announcements.
 - Persistent six-entry survival archive with lifetime statistics, lore unlocks, and achievement tracking across runs.
@@ -41,7 +41,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Procedural horror ambience and core sound effects.
 - [x] Keyboard, gamepad, and touchscreen controls; focus order and Escape dismissal.
 - [x] Audio volume settings and persistence.
-- [x] Outcome-reactive zombie behavior and animation tests.
+- [x] Outcome-reactive zombie animations and threat-level approach/retreat behavior, covered by tests.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
 - [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [x] Add AccessKit labels/descriptions to gameplay and settings controls, logical keyboard focus order, and polite live game-status announcements; CI metadata test added.\n- [ ] Verify TalkBack/screen-reader behavior on physical Android, NVDA on Windows, performance, and physical-device input.
 - [x] Upgrade to Godot 4.7.2 to enable AccessKit-based screen-reader support; add accessible names, descriptions, and live announcements, then verify TalkBack/NVDA.
