@@ -11,6 +11,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Survival run with three hearts, five wins to escape, loss tracking, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
+- Run-end and empty-chip restart control that resets hearts, chips, round progression, and tactical items.
 - Quaternius Superhero Male humanoid model integrated as a dark dealer silhouette with red-eye treatment. Original CC0 license notice and provenance are included.
 - Automated blackjack, survival progression, soft-hand, opponent AI, and tactical-item tests.
 - Godot 4.4.1 headless scene smoke test.
@@ -18,12 +19,13 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 ## Verification status
 
 - **Core blackjack, opponent AI, and Quaternius model import:** passed in run #20.
-- **Tactical item integration and House Bell interaction:** included in the latest main-branch commit; CI verification is pending.
-- **Android APK export:** run #21 installed templates, Java, and a debug keystore, but Android export still reported configuration errors. The logs showed only Build Tools 33.0.2 available; Godot 4.4 requires the Android 34 platform, Build Tools 34.0.0, NDK 23.2.8568313, and CMake 3.10.2.4988404. The workflow now installs those documented SDK components before export.
+- **Tactical items and House Bell rule:** gameplay tests passed in run #23.
+- **Restart control:** added in the latest commit; pending CI verification.
+- **Android APK export:** run #21 still failed on Android SDK configuration. The workflow now installs the documented Android 34 platform, Build Tools 34.0.0, NDK 23.2.8568313, and CMake 3.10.2.4988404 before export.
 - **APK integrity, package metadata, and arm64 library inspection:** not yet passed.
 - **Emulator/physical-device testing:** not yet performed.
 
-[Run #21 logs](https://github.com/kage049754/Cgame/actions/runs/43211310272)
+[Run #23 gameplay tests](https://github.com/kage049754/Cgame/actions/runs/43211634295)
 
 ## Development principles
 
@@ -54,7 +56,7 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Android build
 
-GitHub Actions installs the Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. It exports an arm64 debug APK, then checks ZIP integrity, package metadata, and the arm64 native library before uploading the artifact.
+GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. It exports an arm64 debug APK, then checks ZIP integrity, package metadata, and the arm64 native library before uploading the artifact.
 
 ## License and assets
 

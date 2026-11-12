@@ -23,6 +23,7 @@ var opponent_label: Label
 var medkit_button: Button
 var marked_button: Button
 var bell_button: Button
+var restart_button: Button
 var survival := SurvivalRun.new()
 var items := SurvivalItemsState.new()
 var dealer_revealed := false
@@ -103,7 +104,7 @@ func _build_ui() -> void:
 	add_child(layer)
 	var panel := PanelContainer.new()
 	panel.position = Vector2(22, 18)
-	panel.size = Vector2(410, 265)
+	panel.size = Vector2(460, 390)
 	layer.add_child(panel)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 9)
@@ -145,6 +146,10 @@ func _build_ui() -> void:
 	item_actions.add_child(marked_button)
 	bell_button = _make_button("BELL (1)", _on_house_bell)
 	item_actions.add_child(bell_button)
+	restart_button = _make_button("RESTART RUN", _on_restart)
+	restart_button.custom_minimum_size = Vector2(150, 42)
+	restart_button.visible = false
+	column.add_child(restart_button)
 
 	var hint := Label.new()
 	hint.text = "Beat the dealer. Don't go over 21."
@@ -197,6 +202,18 @@ func _new_round() -> void:
 		_finish_round()
 	_update_ui()
 	_render_cards()
+
+func _on_restart() -> void:
+	survival.reset()
+	items.reset()
+	chips = STARTING_CHIPS
+	current_bet = BASE_BET
+	round_number = 0
+	round_active = false
+	dealer_revealed = false
+	house_bell_active = false
+	status_label.text = "A new run begins."
+	_new_round()
 
 func _on_hit() -> void:
 	if not round_active:
@@ -321,3 +338,4 @@ func _update_ui() -> void:
 	bell_button.text = "BELL ACTIVE" if house_bell_active else "BELL (%d)" % items.house_bells
 	marked_button.disabled = not round_active or items.marked_cards <= 0 or dealer_revealed
 	bell_button.disabled = not round_active or items.house_bells <= 0 or house_bell_active
+	restart_button.visible = not round_active and (survival.finished or chips <= 0)
