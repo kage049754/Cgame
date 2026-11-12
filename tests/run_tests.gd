@@ -33,6 +33,7 @@ func _test_natural_blackjack_priority() -> void:
 	_expect(Rules.outcome(natural, natural) == "push", "Two natural blackjacks should push")
 	_expect(Rules.outcome(natural, ordinary_21) == "win", "Natural blackjack should beat a three-card 21")
 	_expect(Rules.outcome(ordinary_21, natural) == "lose", "Dealer natural blackjack should beat a three-card 21")
+	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], natural) == "lose", "Dealer natural blackjack should beat a non-natural player hand")
 
 func _test_outcomes() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 7}]) == "win", "Higher hand should win")
