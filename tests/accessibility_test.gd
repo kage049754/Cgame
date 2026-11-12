@@ -18,6 +18,10 @@ func _initialize() -> void:
 	var stand := scene.get("stand_button") as Button
 	var double_button := scene.get("double_button") as Button
 	var next_hand := scene.get("deal_button") as Button
+	var ambience := scene.get("ambience_slider") as HSlider
+	var effects := scene.get("effects_slider") as HSlider
+	var scale := scene.get("ui_scale_slider") as HSlider
+	var contrast := scene.get("high_contrast_toggle") as CheckButton
 	_expect(hit.accessibility_name == "Hit", "Hit button should have a concise accessible name")
 	_expect(hit.accessibility_description.contains("Draw one card"), "Hit button should explain its action")
 	_expect(stand.accessibility_description.contains("dealer play"), "Stand button should explain its action")
@@ -33,10 +37,6 @@ func _initialize() -> void:
 	_expect(not (scene.get("settings_panel") as PanelContainer).visible, "Settings should close when toggled")
 	_expect(scene.get_viewport().gui_get_focus_owner() == (scene.get("settings_button") as Button), "Closing settings should return focus to the Settings button")
 	_expect((scene.get("archive_button") as Button).accessibility_name.contains("of 6 entries unlocked"), "Archive button should expose a dynamic unlock count")
-	var ambience := scene.get("ambience_slider") as HSlider
-	var effects := scene.get("effects_slider") as HSlider
-	var scale := scene.get("ui_scale_slider") as HSlider
-	var contrast := scene.get("high_contrast_toggle") as CheckButton
 	_expect(ambience.accessibility_name == "Ambience volume", "Ambience slider should be named")
 	_expect(effects.accessibility_name == "Sound effects volume", "Effects slider should be named")
 	_expect(scale.accessibility_name == "Interface scale", "Scale slider should be named")
