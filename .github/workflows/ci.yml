@@ -30,6 +30,8 @@ jobs:
           test -f scripts/survival_items.gd
           test -f scripts/survival_save.gd
           test -f scripts/encounter_events.gd
+          test -f scripts/procedural_audio.gd
+          test -f tests/audio_generation_test.gd
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb
           test -f assets/enemies/quaternius_zombie_basic.gltf
@@ -46,6 +48,8 @@ jobs:
         run: godot --headless --editor --path . --quit
       - name: Run gameplay rule tests
         run: godot --headless --path . --script res://tests/run_tests.gd
+      - name: Verify procedural audio generation
+        run: godot --headless --path . --script res://tests/audio_generation_test.gd
       - name: Verify Quaternius zombie animations
         run: godot --headless --path . --script res://tests/zombie_animation_test.gd
       - name: Headless scene smoke test

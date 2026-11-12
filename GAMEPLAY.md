@@ -46,3 +46,9 @@
 - The dealer is a darkened Quaternius humanoid model with red eye lights.
 - A Quaternius Zombie Basic model idles beside the table. During Restless Dealer rounds it switches to the Idle_Attack clip.
 - The zombie GLTF includes the atlas and 16 source animation clips; no separate external texture or animation files are required.
+
+## Audio
+
+- The game synthesizes an original low-frequency ambience loop at runtime.
+- Card draw, win, loss, push, and item effects are generated from original oscillator waveforms.
+- No third-party music or audio files are bundled.

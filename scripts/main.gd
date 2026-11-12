@@ -11,6 +11,7 @@ const GreenContainerScene = preload("res://assets/environment/container_green.gl
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
+const AudioSystemScript = preload("res://scripts/procedural_audio.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -36,6 +37,7 @@ var survival := SurvivalRun.new()
 var items := SurvivalItemsState.new()
 var dealer_revealed := false
 var zombie_character: Node3D
+var audio_system: Node
 var house_bell_active := false
 var current_event: Dictionary = {}
 var hit_button: Button
@@ -47,6 +49,8 @@ var cards_root: Node3D
 func _ready() -> void:
 	_build_table()
 	_build_ui()
+	audio_system = AudioSystemScript.new()
+	add_child(audio_system)
 	var restored := _restore_run()
 	if restored and (survival.finished or chips <= 0):
 		status_label.text = "Saved run ended. Restart to play again."
@@ -267,6 +271,8 @@ func _draw_card(hand: Array[Dictionary]) -> void:
 	if deck.is_empty():
 		_create_deck()
 	hand.append(deck.pop_back())
+	if audio_system != null:
+		audio_system.call("play_card")
 
 func _new_round() -> void:
 	if survival.finished:
@@ -353,6 +359,8 @@ func _on_medkit() -> void:
 	if not round_active and survival.use_medkit(chips):
 		chips -= 75
 		status_label.text = "Medkit used. One heart restored."
+		if audio_system != null:
+			audio_system.call("play_item")
 		_save_run()
 		_update_ui()
 
@@ -360,6 +368,8 @@ func _on_marked_card() -> void:
 	if items.use_marked_card(round_active):
 		dealer_revealed = true
 		status_label.text = "The marked card reveals the dealer's hidden card."
+		if audio_system != null:
+			audio_system.call("play_item")
 		_update_ui()
 		_render_cards()
 
@@ -367,6 +377,8 @@ func _on_house_bell() -> void:
 	if items.use_house_bell(round_active):
 		house_bell_active = true
 		status_label.text = "The House Bell is armed. The dealer will stand this hand."
+		if audio_system != null:
+			audio_system.call("play_item")
 		_update_ui()
 
 func _finish_round() -> void:
@@ -375,6 +387,13 @@ func _finish_round() -> void:
 	round_active = false
 	var result := Rules.outcome(player_hand, dealer_hand)
 	survival.resolve_hand(result)
+	if audio_system != null:
+		if result == "win":
+			audio_system.call("play_win")
+		elif result == "lose":
+			audio_system.call("play_loss")
+		else:
+			audio_system.call("play_push")
 	if Rules.is_blackjack(player_hand) and result == "win":
 		chips += int(round(float(current_bet) * 2.5))
 		status_label.text = "BLACKJACK! You win 3:2."
