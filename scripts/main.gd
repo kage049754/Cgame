@@ -150,6 +150,7 @@ func _new_round() -> void:
 		return
 	round_number += 1
 	current_bet = mini(BASE_BET, chips)
+	chips -= current_bet
 	player_hand.clear()
 	dealer_hand.clear()
 	_create_deck()
@@ -185,7 +186,7 @@ func _on_stand() -> void:
 	_render_cards()
 
 func _on_double() -> void:
-	if not round_active or player_hand.size() != 2 or chips < current_bet * 2:
+	if not round_active or player_hand.size() != 2 or chips < current_bet:
 		return
 	chips -= current_bet
 	current_bet *= 2
@@ -253,5 +254,5 @@ func _update_ui() -> void:
 	chips_label.text = "CHIPS  %d" % chips
 	hit_button.disabled = not round_active
 	stand_button.disabled = not round_active
-	double_button.disabled = not round_active or player_hand.size() != 2 or chips < current_bet * 2
+	double_button.disabled = not round_active or player_hand.size() != 2 or chips < current_bet
 	deal_button.disabled = round_active or chips <= 0
