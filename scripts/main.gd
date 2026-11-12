@@ -3,6 +3,7 @@ extends Node3D
 const Rules = preload("res://scripts/blackjack_rules.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
 const DealerCharacterScene = preload("res://scenes/dealer_character.tscn")
+const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -20,7 +21,12 @@ var chips_label: Label
 var survival_label: Label
 var opponent_label: Label
 var medkit_button: Button
+var marked_button: Button
+var bell_button: Button
 var survival := SurvivalRun.new()
+var items := SurvivalItemsState.new()
+var dealer_revealed := false
+var house_bell_active := false
 var hit_button: Button
 var stand_button: Button
 var deal_button: Button
@@ -131,8 +137,14 @@ func _build_ui() -> void:
 	actions.add_child(double_button)
 	deal_button = _make_button("NEXT HAND", _on_next_hand)
 	actions.add_child(deal_button)
+	var item_actions := HBoxContainer.new()
+	column.add_child(item_actions)
 	medkit_button = _make_button("MEDKIT (75)", _on_medkit)
-	column.add_child(medkit_button)
+	item_actions.add_child(medkit_button)
+	marked_button = _make_button("MARKED (1)", _on_marked_card)
+	item_actions.add_child(marked_button)
+	bell_button = _make_button("BELL (1)", _on_house_bell)
+	item_actions.add_child(bell_button)
 
 	var hint := Label.new()
 	hint.text = "Beat the dealer. Don't go over 21."
@@ -168,6 +180,8 @@ func _new_round() -> void:
 		_update_ui()
 		return
 	round_number += 1
+	dealer_revealed = false
+	house_bell_active = false
 	current_bet = mini(BASE_BET, chips)
 	chips -= current_bet
 	player_hand.clear()
@@ -198,7 +212,7 @@ func _on_hit() -> void:
 func _on_stand() -> void:
 	if not round_active:
 		return
-	while Opponents.should_dealer_hit(dealer_hand, survival.wins):
+	while not house_bell_active and Opponents.should_dealer_hit(dealer_hand, survival.wins):
 		_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
@@ -225,6 +239,19 @@ func _on_medkit() -> void:
 	if survival.use_medkit(chips):
 		chips -= 75
 		status_label.text = "Medkit used. One heart restored."
+		_update_ui()
+
+func _on_marked_card() -> void:
+	if items.use_marked_card(round_active):
+		dealer_revealed = true
+		status_label.text = "The marked card reveals the dealer's hidden card."
+		_update_ui()
+		_render_cards()
+
+func _on_house_bell() -> void:
+	if items.use_house_bell(round_active):
+		house_bell_active = true
+		status_label.text = "The House Bell is armed. The dealer will stand this hand."
 		_update_ui()
 
 func _finish_round() -> void:
@@ -254,7 +281,7 @@ func _render_cards() -> void:
 	for child in cards_root.get_children():
 		child.queue_free()
 	_add_hand_visuals(player_hand, Vector3(-1.65, 0.34, 1.45), false)
-	_add_hand_visuals(dealer_hand, Vector3(-1.65, 0.34, -1.25), round_active)
+	_add_hand_visuals(dealer_hand, Vector3(-1.65, 0.34, -1.25), round_active and not dealer_revealed)
 
 func _add_hand_visuals(hand: Array[Dictionary], origin: Vector3, hide_second: bool) -> void:
 	for index in range(hand.size()):
@@ -278,7 +305,7 @@ func _add_hand_visuals(hand: Array[Dictionary], origin: Vector3, hide_second: bo
 			card_node.add_child(face)
 
 func _update_ui() -> void:
-	var dealer_value := "?" if round_active else str(Rules.hand_value(dealer_hand))
+	var dealer_value := "?" if round_active and not dealer_revealed else str(Rules.hand_value(dealer_hand))
 	dealer_label.text = "DEALER  %s  |  %d cards" % [dealer_value, dealer_hand.size()]
 	player_label.text = "YOU  %d  |  %d cards  |  Bet: %d" % [Rules.hand_value(player_hand), player_hand.size(), current_bet]
 	chips_label.text = "CHIPS  %d" % chips
@@ -290,3 +317,7 @@ func _update_ui() -> void:
 	double_button.disabled = not round_active or player_hand.size() != 2 or chips < current_bet
 	deal_button.disabled = round_active or chips <= 0 or survival.finished
 	medkit_button.disabled = survival.finished or survival.medkit_used or survival.health >= SurvivalRun.MAX_HEALTH or chips < 75
+	marked_button.text = "MARKED (%d)" % items.marked_cards
+	bell_button.text = "BELL ACTIVE" if house_bell_active else "BELL (%d)" % items.house_bells
+	marked_button.disabled = not round_active or items.marked_cards <= 0 or dealer_revealed
+	bell_button.disabled = not round_active or items.house_bells <= 0 or house_bell_active

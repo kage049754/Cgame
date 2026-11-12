@@ -3,6 +3,7 @@ extends SceneTree
 const Rules = preload("res://scripts/blackjack_rules.gd")
 const SurvivalRunState = preload("res://scripts/survival_run.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
+const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 
 func _initialize() -> void:
 	_test_values()
@@ -11,6 +12,7 @@ func _initialize() -> void:
 	_test_natural_blackjack_priority()
 	_test_soft_hands_and_opponent_profiles()
 	_test_survival_progression()
+	_test_survival_items()
 	print("All Survival 21 tests passed.")
 	quit()
 
@@ -56,6 +58,17 @@ func _test_outcomes() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 8}]) == "push", "Equal hands should push")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 9}, {"rank": 5}], [{"rank": 10}, {"rank": 7}]) == "lose", "Player bust should lose")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 9}, {"rank": 5}]) == "win", "Dealer bust should lose")
+
+func _test_survival_items() -> void:
+	var items := SurvivalItemsState.new()
+	_expect(items.marked_cards == 1 and items.house_bells == 1, "Run should start with one of each tactical item")
+	_expect(not items.use_marked_card(false), "Marked card cannot be used outside an active hand")
+	_expect(items.use_marked_card(true), "Marked card should reveal one dealer card during an active hand")
+	_expect(items.marked_cards == 0 and not items.use_marked_card(true), "Marked card should be single-use")
+	_expect(items.use_house_bell(true), "House Bell should arm during an active hand")
+	_expect(items.house_bells == 0 and not items.use_house_bell(true), "House Bell should be single-use")
+	items.reset()
+	_expect(items.marked_cards == 1 and items.house_bells == 1, "Restart should restore tactical items")
 
 func _test_survival_progression() -> void:
 	var run := SurvivalRunState.new()

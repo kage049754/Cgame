@@ -27,6 +27,7 @@ jobs:
           test -f scripts/survival_run.gd
           test -f scripts/opponent_profiles.gd
           test -f scripts/dealer_character.gd
+          test -f scripts/survival_items.gd
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb
           test -f assets/licenses/QUATERNIUS-CC0-1.0.txt
