@@ -256,13 +256,14 @@ func _play_outcome_effect(result: String) -> void:
 	outcome_light_tween.set_parallel(true)
 	outcome_light_tween.tween_property(table_fill_light, "light_color", Color(0.35, 0.52, 0.48), 0.65)
 	outcome_light_tween.tween_property(table_fill_light, "light_energy", 1.8, 0.65)
-	if result == "lose" and main_camera != null:
+	var shake_strength := VisualEffects.camera_shake_strength(result)
+	if shake_strength > 0.0 and main_camera != null:
 		if camera_shake_tween != null and camera_shake_tween.is_running():
 			camera_shake_tween.kill()
 		main_camera.position = camera_rest_position
 		camera_shake_tween = create_tween()
-		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position + Vector3(0.12, 0.035, 0), 0.045)
-		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position + Vector3(-0.10, -0.02, 0), 0.055)
+		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position + Vector3(shake_strength, shake_strength * 0.29, 0), 0.045)
+		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position + Vector3(-shake_strength * 0.83, -shake_strength * 0.16, 0), 0.055)
 		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position, 0.08)
 
 func _on_music_volume_changed(value: float) -> void:
