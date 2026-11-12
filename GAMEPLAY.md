@@ -129,3 +129,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Collector unlocks after defeating the Collector; The House unlocks after defeating The House.
 - A selected Collector run escalates to The House after two wins. A selected House run begins at The House.
 - The current run keeps its chosen starting opponent even if the next-run setting is changed. The selection is stored in the run save and migrated from save versions 1 and 2.
+
+## Distinct dealer appearance
+
+- Night Dealer uses a charcoal silhouette with red eyes.
+- Collector uses a dark teal body finish and teal eye glow.
+- The House uses a bronze-gold metallic finish and amber eye glow.
+- The dealer appearance updates when the active run escalates to a new personality.

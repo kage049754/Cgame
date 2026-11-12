@@ -41,6 +41,7 @@ var survival := SurvivalRun.new()
 var items := SurvivalItemsState.new()
 var dealer_revealed := false
 var zombie_character: Node3D
+var dealer_character: Node3D
 var audio_system: Node
 var settings_button: Button
 var settings_panel: PanelContainer
@@ -169,6 +170,12 @@ func _on_starting_opponent_selected(index: int) -> void:
 
 func _current_opponent_profile() -> Dictionary:
 	return Opponents.profile_for_wins(survival.wins, run_starting_tier)
+
+func _refresh_dealer_appearance() -> void:
+	if dealer_character == null:
+		return
+	var profile := _current_opponent_profile()
+	dealer_character.call("set_personality", str(profile.get("id", "NIGHT_DEALER")))
 
 func _on_ui_scale_changed(value: float) -> void:
 	_apply_ui_scale(value)
@@ -365,7 +372,7 @@ func _build_table() -> void:
 	cards_root = Node3D.new()
 	cards_root.name = "Cards"
 	add_child(cards_root)
-	var dealer_character := DealerCharacterScene.instantiate()
+	dealer_character = DealerCharacterScene.instantiate()
 	dealer_character.position = Vector3(0, -0.55, -4.05)
 	add_child(dealer_character)
 	zombie_character = ZombieEnemyScene.instantiate() as Node3D
@@ -748,6 +755,7 @@ func _finish_round() -> void:
 	var opponent_name := str(_current_opponent_profile().get("name", "UNKNOWN"))
 	var result := Rules.outcome(player_hand, dealer_hand)
 	survival.resolve_hand(result)
+	_refresh_dealer_appearance()
 	if zombie_character != null:
 		zombie_character.call("play_outcome", result, survival.ending)
 	if audio_system != null:

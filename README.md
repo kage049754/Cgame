@@ -10,7 +10,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Hit, Stand, Double, and Next Hand actions, with keyboard shortcuts, gamepad mappings, and touchscreen buttons.
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
 - Survival run with three hearts, five wins to escape, opponent progression, and a one-use 75-chip medkit.
-- Selectable starting opponents: choose any unlocked House personality for the next run; Collector and The House unlock by defeating them. A selected Collector escalates to The House after two wins.\n- Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
+- Selectable starting opponents: choose any unlocked House personality for the next run; Collector and The House unlock by defeating them. A selected Collector escalates to The House after two wins.\n- Three dealer personalities with distinct draw rules and separate visual treatments: red-eyed Night Dealer, teal Collector, and gold-eyed metallic House. Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
 - Encounter events: Restless Dealer forces soft-17 draws, House Favor rewards pushes, Blood Toll taxes losses, Whispering Table rewards wins, Rust Storm taxes player busts, and Dealer's Debt rewards dealer busts.
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
@@ -33,7 +33,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 - [x] Core blackjack rules and automated tests.
 - [x] 3D table, cards, dealing, and player controls.
-- [x] Opponent personalities, selectable unlocked starting Houses, and encounter-specific dealer behavior.
+- [x] Opponent personalities, selectable unlocked starting Houses, unique dealer appearances, and encounter-specific dealer behavior.
 - [x] Survival health, progression, medkit, and tactical items.
 - [x] Completed-round save/load and run restart.
 - [x] Six encounter events with distinct payout, dealer, and bust modifiers; outcome-reactive zombie animation playback tests.
