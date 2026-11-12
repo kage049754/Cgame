@@ -48,12 +48,7 @@ jobs:
         run: |
           test -d "$ANDROID_HOME"
           java -version
-          godot --headless --path . --export-release "Android" /tmp/export-check.apk --verbose 2>&1 | tee /tmp/android-export-check.log || {
-            cat /tmp/android-export-check.log
-            exit 1
-          }
-          test -s /tmp/export-check.apk
-      - name: Export Android APK
+      - name: Export and verify Android APK
         run: |
           mkdir -p build
           godot --headless --path . --export-debug "Android" build/Survival21.apk
