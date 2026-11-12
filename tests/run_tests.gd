@@ -4,6 +4,7 @@ const Rules = preload("res://scripts/blackjack_rules.gd")
 const SurvivalRunState = preload("res://scripts/survival_run.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
+const SaveSystem = preload("res://scripts/survival_save.gd")
 
 func _initialize() -> void:
 	_test_values()
@@ -13,6 +14,7 @@ func _initialize() -> void:
 	_test_soft_hands_and_opponent_profiles()
 	_test_survival_progression()
 	_test_survival_items()
+	_test_save_system()
 	print("All Survival 21 tests passed.")
 	quit()
 
@@ -59,6 +61,29 @@ func _test_outcomes() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 8}]) == "push", "Equal hands should push")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 9}, {"rank": 5}], [{"rank": 10}, {"rank": 7}]) == "lose", "Player bust should lose")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 9}, {"rank": 5}]) == "win", "Dealer bust should lose")
+
+func _test_save_system() -> void:
+	var path := "user://survival21_test.cfg"
+	var state := {
+		"save_version": SaveSystem.SAVE_VERSION,
+		"chips": 325,
+		"health": 2,
+		"wins": 1,
+		"losses": 1,
+		"pushes": 0,
+		"medkit_used": true,
+		"finished": false,
+		"ending": "",
+		"marked_cards": 0,
+		"house_bells": 1
+	}
+	_expect(SaveSystem.save_state(state, path), "Save file should be written")
+	var loaded := SaveSystem.load_state(path)
+	_expect(int(loaded.get("chips", 0)) == 325, "Saved chips should round-trip")
+	_expect(int(loaded.get("health", 0)) == 2, "Saved health should round-trip")
+	_expect(int(loaded.get("marked_cards", -1)) == 0, "Saved item counts should round-trip")
+	SaveSystem.delete_state(path)
+	_expect(SaveSystem.load_state(path).is_empty(), "Deleted save should no longer load")
 
 func _test_survival_items() -> void:
 	var items := SurvivalItemsState.new()

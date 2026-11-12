@@ -4,6 +4,7 @@ const Rules = preload("res://scripts/blackjack_rules.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
 const DealerCharacterScene = preload("res://scenes/dealer_character.tscn")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
+const SaveSystem = preload("res://scripts/survival_save.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -37,7 +38,45 @@ var cards_root: Node3D
 func _ready() -> void:
 	_build_table()
 	_build_ui()
-	_new_round()
+	var restored := _restore_run()
+	if restored and (survival.finished or chips <= 0):
+		status_label.text = "Saved run ended. Restart to play again."
+		_update_ui()
+		_render_cards()
+	else:
+		_new_round()
+
+func _save_run() -> void:
+	var state := {
+		"save_version": SaveSystem.SAVE_VERSION,
+		"chips": chips,
+		"health": survival.health,
+		"wins": survival.wins,
+		"losses": survival.losses,
+		"pushes": survival.pushes,
+		"medkit_used": survival.medkit_used,
+		"finished": survival.finished,
+		"ending": survival.ending,
+		"marked_cards": items.marked_cards,
+		"house_bells": items.house_bells
+	}
+	SaveSystem.save_state(state)
+
+func _restore_run() -> bool:
+	var state := SaveSystem.load_state()
+	if state.is_empty():
+		return false
+	chips = maxi(0, int(state.get("chips", STARTING_CHIPS)))
+	survival.health = clampi(int(state.get("health", SurvivalRun.STARTING_HEALTH)), 0, SurvivalRun.MAX_HEALTH)
+	survival.wins = maxi(0, int(state.get("wins", 0)))
+	survival.losses = maxi(0, int(state.get("losses", 0)))
+	survival.pushes = maxi(0, int(state.get("pushes", 0)))
+	survival.medkit_used = bool(state.get("medkit_used", false))
+	survival.finished = bool(state.get("finished", false))
+	survival.ending = str(state.get("ending", ""))
+	items.marked_cards = clampi(int(state.get("marked_cards", 1)), 0, SurvivalItemsState.STARTING_MARKED_CARDS)
+	items.house_bells = clampi(int(state.get("house_bells", 1)), 0, SurvivalItemsState.STARTING_HOUSE_BELLS)
+	return true
 
 func _build_table() -> void:
 	var camera := Camera3D.new()
@@ -204,6 +243,7 @@ func _new_round() -> void:
 	_render_cards()
 
 func _on_restart() -> void:
+	SaveSystem.delete_state()
 	survival.reset()
 	items.reset()
 	chips = STARTING_CHIPS
@@ -253,9 +293,10 @@ func _on_next_hand() -> void:
 		_new_round()
 
 func _on_medkit() -> void:
-	if survival.use_medkit(chips):
+	if not round_active and survival.use_medkit(chips):
 		chips -= 75
 		status_label.text = "Medkit used. One heart restored."
+		_save_run()
 		_update_ui()
 
 func _on_marked_card() -> void:
@@ -293,6 +334,7 @@ func _finish_round() -> void:
 	elif survival.ending == "defeat":
 		status_label.text = "YOUR LAST HEART FADES. THE HOUSE WINS."
 	_update_ui()
+	_save_run()
 
 func _render_cards() -> void:
 	for child in cards_root.get_children():
@@ -333,7 +375,7 @@ func _update_ui() -> void:
 	stand_button.disabled = not round_active
 	double_button.disabled = not round_active or player_hand.size() != 2 or chips < current_bet
 	deal_button.disabled = round_active or chips <= 0 or survival.finished
-	medkit_button.disabled = survival.finished or survival.medkit_used or survival.health >= SurvivalRun.MAX_HEALTH or chips < 75
+	medkit_button.disabled = round_active or survival.finished or survival.medkit_used or survival.health >= SurvivalRun.MAX_HEALTH or chips < 75
 	marked_button.text = "MARKED (%d)" % items.marked_cards
 	bell_button.text = "BELL ACTIVE" if house_bell_active else "BELL (%d)" % items.house_bells
 	marked_button.disabled = not round_active or items.marked_cards <= 0 or dealer_revealed

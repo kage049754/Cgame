@@ -26,3 +26,9 @@
 - Marked Card: one use per run; reveals the dealer's hidden card for the current hand.
 - House Bell: one use per run; prevents the dealer from drawing during that hand.
 - Items are virtual gameplay effects only; no real-money wagering or payments are present.
+
+## Persistence
+
+- The game saves the last completed round's chips, health, wins/losses/pushes, medkit use, and remaining tactical items to `user://survival21.cfg`.
+- A new hand begins when a saved unfinished run is restored. The current hand and deck are not resumed.
+- The save is cleared when the player explicitly restarts the run.
