@@ -8,6 +8,7 @@ func _initialize() -> void:
 	scene.set("round_active", true)
 	scene.set("dealer_revealed", false)
 	scene.call("_render_cards", true, false, false)
+	var player_hand: Array = scene.get("player_hand")
 	var cards_before_tween := scene.get("cards_root") as Node3D
 	if cards_before_tween.get_child(player_hand.size() - 1).position.y < 1.0:
 		push_error("Newly dealt card should enter from above the table.")
@@ -15,7 +16,6 @@ func _initialize() -> void:
 		return
 	await process_frame
 	var cards_root := scene.get("cards_root") as Node3D
-	var player_hand: Array = scene.get("player_hand")
 	var dealer_hand: Array = scene.get("dealer_hand")
 	if cards_root == null:
 		push_error("Card root was not created.")
