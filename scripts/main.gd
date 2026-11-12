@@ -51,6 +51,7 @@ var high_contrast_toggle: CheckButton
 var starting_opponent_selector: OptionButton
 var starting_opponent_label: Label
 var selected_starting_tier := 0
+var settings_loading := false
 var run_starting_tier := 0
 var ui_layer: CanvasLayer
 var ui_scale_factor := 1.0
@@ -124,11 +125,12 @@ func _restore_run() -> bool:
 func _toggle_settings() -> void:
 	settings_panel.visible = not settings_panel.visible
 	if settings_panel.visible:
-		ambience_slider.grab_focus()
+		starting_opponent_selector.grab_focus()
 	else:
 		settings_button.grab_focus()
 
 func _load_settings() -> void:
+	settings_loading = true
 	var settings := SettingsStore.load_settings()
 	ambience_slider.value = float(settings.get("ambience_percent", 4.0))
 	music_slider.value = float(settings.get("music_percent", 20.0))
@@ -143,8 +145,11 @@ func _load_settings() -> void:
 	_on_effects_volume_changed(effects_slider.value)
 	_apply_ui_scale(ui_scale_slider.value)
 	_apply_high_contrast(high_contrast_toggle.button_pressed)
+	settings_loading = false
 
 func _save_settings() -> void:
+	if settings_loading:
+		return
 	SettingsStore.save_settings({
 		"ambience_percent": ambience_slider.value,
 		"music_percent": music_slider.value,
@@ -481,8 +486,8 @@ func _build_ui() -> void:
 	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
 	settings_panel.offset_left = -150
 	settings_panel.offset_right = 150
-	settings_panel.offset_top = -250
-	settings_panel.offset_bottom = 250
+	settings_panel.offset_top = -285
+	settings_panel.offset_bottom = 285
 	settings_panel.visible = false
 	ui_layer.add_child(settings_panel)
 	var settings_column := VBoxContainer.new()

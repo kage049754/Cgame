@@ -38,7 +38,7 @@ func _initialize() -> void:
 	_expect(double_button.get_node_or_null(double_button.focus_next) == next_hand, "Keyboard focus should move from Double to Next Hand")
 	scene.call("_toggle_settings")
 	_expect((scene.get("settings_panel") as PanelContainer).visible, "Settings should open when toggled")
-	_expect(scene.get_viewport().gui_get_focus_owner() == ambience, "Opening settings should move focus to the first settings control")
+	_expect(scene.get_viewport().gui_get_focus_owner() == starting_selector, "Opening settings should move focus to the starting opponent selector")
 	scene.call("_toggle_settings")
 	_expect(not (scene.get("settings_panel") as PanelContainer).visible, "Settings should close when toggled")
 	_expect(scene.get_viewport().gui_get_focus_owner() == (scene.get("settings_button") as Button), "Closing settings should return focus to the Settings button")
