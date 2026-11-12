@@ -6,6 +6,7 @@ const Opponents = preload("res://scripts/opponent_profiles.gd")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
+const ProgressionState = preload("res://scripts/progression.gd")
 
 func _initialize() -> void:
 	_test_values()
@@ -17,6 +18,8 @@ func _initialize() -> void:
 	_test_survival_items()
 	_test_save_system()
 	_test_encounter_events()
+	_test_save_migration()
+	_test_persistent_progression()
 	print("All Survival 21 tests passed.")
 	quit()
 
@@ -130,3 +133,42 @@ func _test_survival_progression() -> void:
 	for i in range(5):
 		run.resolve_hand("win")
 	_expect(run.finished and run.ending == "victory", "Five wins should complete the run")
+
+func _test_save_migration() -> void:
+	var path := "user://survival21_legacy_test.cfg"
+	var legacy := ConfigFile.new()
+	legacy.set_value("state", "save_version", 1)
+	legacy.set_value("state", "chips", 275)
+	legacy.set_value("state", "health", 2)
+	legacy.set_value("state", "wins", 1)
+	_expect(legacy.save(path) == OK, "Legacy v1 save should be written")
+	var migrated := SaveSystem.load_state(path)
+	_expect(int(migrated.get("save_version", 0)) == SaveSystem.SAVE_VERSION, "Version 1 save should migrate to current version")
+	_expect(int(migrated.get("chips", 0)) == 275, "Migration should preserve chips")
+	_expect(int(migrated.get("round_number", -1)) == 0, "Migration should add missing round defaults")
+	_expect(int(migrated.get("marked_cards", -1)) == 1, "Migration should restore missing marked-card default")
+	var upgraded := ConfigFile.new()
+	_expect(upgraded.load(path) == OK and int(upgraded.get_value("state", "save_version", 0)) == SaveSystem.SAVE_VERSION, "Migrated save should be persisted at the new version")
+	SaveSystem.delete_state(path)
+
+func _test_persistent_progression() -> void:
+	var path := "user://survival21_profile_test.cfg"
+	var profile := ProgressionState.new()
+	profile.record_hand("win", "THE COLLECTOR", "")
+	profile.record_item_use("marked_card")
+	profile.record_item_use("house_bell")
+	_expect(profile.unlocked.has("FIRST_HAND"), "First completed hand should unlock its archive entry")
+	_expect(profile.unlocked.has("COLLECTOR"), "Defeating Collector should unlock its archive entry")
+	_expect(profile.unlocked.has("RELIC_PAIR"), "Using both tactical items should unlock their archive entry")
+	for i in range(8):
+		profile.record_hand("push", "THE NIGHT DEALER", "")
+	_expect(profile.unlocked.has("TEN_HANDS"), "Ten completed hands should unlock the regular entry")
+	profile.record_hand("win", "THE HOUSE", "victory")
+	_expect(profile.unlocked.has("HOUSE") and profile.unlocked.has("ESCAPE"), "Defeating The House and escaping should unlock both entries")
+	_expect(profile.save_profile(path), "Progression profile should save")
+	var restored := ProgressionState.new()
+	restored.load_profile(path)
+	_expect(restored.unlocked_count() == 6, "All six archive unlocks should survive reload")
+	_expect(restored.hands_played == 10, "Lifetime hand count should survive reload")
+	_expect(restored.archive_text().contains("OUT THE DOOR"), "Unlocked archive text should be readable")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

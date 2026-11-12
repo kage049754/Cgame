@@ -13,6 +13,7 @@ const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const AudioSystemScript = preload("res://scripts/procedural_audio.gd")
 const SettingsStore = preload("res://scripts/settings_store.gd")
+const ProgressionState = preload("res://scripts/progression.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -41,6 +42,9 @@ var zombie_character: Node3D
 var audio_system: Node
 var settings_button: Button
 var settings_panel: PanelContainer
+var archive_button: Button
+var archive_dialog: AcceptDialog
+var progression := ProgressionState.new()
 var ambience_slider: HSlider
 var effects_slider: HSlider
 var house_bell_active := false
@@ -54,6 +58,7 @@ var cards_root: Node3D
 func _ready() -> void:
 	_build_table()
 	_build_ui()
+	progression.load_profile()
 	audio_system = AudioSystemScript.new()
 	add_child(audio_system)
 	_load_settings()
@@ -298,6 +303,13 @@ func _build_ui() -> void:
 	item_actions.add_child(bell_button)
 	settings_button = _make_button("SETTINGS", _toggle_settings)
 	column.add_child(settings_button)
+	archive_button = _make_button("ARCHIVE (0/6)", _show_archive)
+	column.add_child(archive_button)
+	archive_dialog = AcceptDialog.new()
+	archive_dialog.title = "SURVIVAL ARCHIVE"
+	archive_dialog.dialog_text = ""
+	archive_dialog.min_size = Vector2i(520, 420)
+	layer.add_child(archive_dialog)
 	restart_button = _make_button("RESTART RUN", _on_restart)
 	restart_button.custom_minimum_size = Vector2(150, 42)
 	restart_button.visible = false
@@ -459,6 +471,7 @@ func _on_medkit() -> void:
 
 func _on_marked_card() -> void:
 	if items.use_marked_card(round_active):
+		progression.record_item_use("marked_card")
 		dealer_revealed = true
 		status_label.text = "The marked card reveals the dealer's hidden card."
 		if audio_system != null:
@@ -468,6 +481,7 @@ func _on_marked_card() -> void:
 
 func _on_house_bell() -> void:
 	if items.use_house_bell(round_active):
+		progression.record_item_use("house_bell")
 		house_bell_active = true
 		status_label.text = "The House Bell is armed. The dealer will stand this hand."
 		if audio_system != null:
@@ -478,6 +492,7 @@ func _finish_round() -> void:
 	if not round_active:
 		return
 	round_active = false
+	var opponent_name := str(Opponents.profile_for_wins(survival.wins).get("name", "UNKNOWN"))
 	var result := Rules.outcome(player_hand, dealer_hand)
 	survival.resolve_hand(result)
 	if audio_system != null:
@@ -504,8 +519,14 @@ func _finish_round() -> void:
 		status_label.text = "THE HOUSE IS BROKEN. YOU SURVIVED."
 	elif survival.ending == "defeat":
 		status_label.text = "YOUR LAST HEART FADES. THE HOUSE WINS."
+	progression.record_hand(result, opponent_name, survival.ending)
+	progression.save_profile()
 	_update_ui()
 	_save_run()
+
+func _show_archive() -> void:
+	archive_dialog.dialog_text = progression.archive_text()
+	archive_dialog.popup_centered()
 
 func _render_cards() -> void:
 	for child in cards_root.get_children():
@@ -553,3 +574,4 @@ func _update_ui() -> void:
 	marked_button.disabled = not round_active or items.marked_cards <= 0 or dealer_revealed
 	bell_button.disabled = not round_active or items.house_bells <= 0 or house_bell_active
 	restart_button.visible = not round_active and (survival.finished or chips <= 0)
+	archive_button.text = "ARCHIVE (%d/6)" % progression.unlocked_count()

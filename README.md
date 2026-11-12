@@ -17,12 +17,15 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic as an animated threat with Idle and Idle_Attack playback.
 - Original procedural horror ambience and synthesized card, win, loss, and item sound effects.
 - In-game audio settings with saved ambience and effects volume sliders.
+- Persistent six-entry survival archive with lifetime statistics, lore unlocks, and achievement tracking across runs.
+- Save migration from version 1 to version 2, preserving existing run data and filling missing fields.
 - Automated blackjack, survival, opponent AI, item, event, save/load, animation, audio, and settings tests.
 
 ## Verification status
 
 - **Gameplay, event, zombie animation, and procedural audio tests:** passed in run #32.
 - **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
+- **Persistent profile progression and save migration:** implemented in the latest commit; pending CI.
 - **Android arm64 APK:** environment build passed in run #31; audio/settings and Windows export are being added in newer runs.
 - **Windows x86_64 desktop export:** configured in the latest commit; pending CI verification.
 - **Audio settings persistence:** added in the latest commit; pending CI verification.
@@ -42,7 +45,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Procedural horror ambience and core sound effects.
 - [x] Keyboard controls and audio volume settings (settings tests pending).
 - [ ] More varied encounter events and enemy behaviors.
-- [ ] Progression, unlockables, and save migration.
+- [x] Persistent archive achievements and version 1-to-2 save migration.
 - [ ] Android and desktop input adaptation, performance, and accessibility.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.
 

@@ -70,3 +70,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Ambience volume and sound-effect volume have separate sliders.
 - Slider values persist in `user://settings.cfg`.
 - Both streams use original synthesized sounds and can be muted independently.
+
+## Persistent archive and progression
+
+- Lifetime profile statistics are stored separately from the current run, so restarting a run does not reset archive progress.
+- Six unlocks: complete the first hand, defeat the Collector, defeat The House, escape a run, complete ten hands, and use both tactical items.
+- Unlocks reveal short lore entries in the Archive panel; locked entries show their requirement.
+- Current run saves migrate from version 1 to version 2 in place. Existing chip, health, win/loss, round, and item data is retained; missing fields receive safe defaults.
