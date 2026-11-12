@@ -868,7 +868,7 @@ func _show_archive() -> void:
 
 func _render_cards(animate_player_last: bool = false, animate_dealer_last: bool = false, animate_all: bool = false) -> void:
 	for child in cards_root.get_children():
-		child.queue_free()
+		child.free()
 	_add_hand_visuals(player_hand, Vector3(-1.65, 0.34, 1.45), false, animate_player_last, animate_all)
 	_add_hand_visuals(dealer_hand, Vector3(-1.65, 0.34, -1.25), round_active and not dealer_revealed, animate_dealer_last, animate_all)
 
