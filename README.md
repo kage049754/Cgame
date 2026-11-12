@@ -16,14 +16,14 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Quaternius Superhero Male humanoid model integrated as a dark dealer silhouette with red-eye treatment.
 - Quaternius Zombie Basic model integrated as an animated background threat, with Idle/Idle_Attack animation switching on encounter events.
 - Original CC0 license notices and source provenance included for both models.
-- Automated blackjack, survival progression, soft-hand, opponent AI, tactical-item, encounter-event, and save/load tests.
+- Automated blackjack, survival progression, soft-hand, opponent AI, tactical-item, encounter-event, save/load, and Quaternius zombie animation playback tests.
 - Godot 4.4.1 headless scene smoke test.
 
 ## Verification status
 
 - **Core blackjack, opponent, tactical-item, save/load, and scene tests:** passed in run #26 before encounter-event and zombie-scene integration.
 - **Encounter-event rules:** added in commit `637b2f5`; run #28 is testing them.
-- **Zombie asset and animation integration:** added in the latest commit; pending scene import and runtime verification.
+- **Zombie asset and animation integration:** imported in run #29; explicit Idle and Idle_Attack playback verification is added in the next CI run.
 - **Android APK export:** the project enables ETC2/ASTC texture import and the workflow installs the matching Android SDK, NDK, CMake, and export templates. APK export is pending run #27/#28.
 - **APK integrity, package metadata, arm64 library inspection, and device testing:** not yet passed.
 

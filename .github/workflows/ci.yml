@@ -34,6 +34,7 @@ jobs:
           test -f assets/characters/quaternius_superhero_male.glb
           test -f assets/enemies/quaternius_zombie_basic.gltf
           test -f scripts/zombie_enemy.gd
+          test -f tests/zombie_animation_test.gd
           test -f scenes/zombie_enemy.tscn
           test -f assets/licenses/QUATERNIUS-CC0-1.0.txt
           test -f export_presets.cfg
@@ -41,6 +42,8 @@ jobs:
         run: godot --headless --editor --path . --quit
       - name: Run gameplay rule tests
         run: godot --headless --path . --script res://tests/run_tests.gd
+      - name: Verify Quaternius zombie animations
+        run: godot --headless --path . --script res://tests/zombie_animation_test.gd
       - name: Headless scene smoke test
         run: timeout 20s godot --headless --path . --quit-after 5
 
