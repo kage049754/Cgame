@@ -49,6 +49,10 @@ Run #51 passed:
 - Android APK export, signature, package ID, ABI, and ZIP checks.
 - Windows x86-64 export and PE format check.
 
+## Additional runtime test
+
+- An x86_64 Android emulator APK preset and GitHub Actions install/launch test are now configured. Its first run is pending.
+
 ## Not yet verified
 
 - Installation and runtime behavior on a physical Android phone.

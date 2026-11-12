@@ -148,11 +148,28 @@ jobs:
           godot --headless --verbose --path . --export-debug "Windows Desktop" build/Survival21.exe
           test -s build/Survival21.exe
           file build/Survival21.exe | grep -E 'PE32\+.*x86-64|PE32\+ executable'
+      - name: Export x86_64 Android emulator APK
+        run: |
+          godot --headless --verbose --path . --export-debug "Android Emulator x86_64" build/Survival21-Emulator.apk
+          test -s build/Survival21-Emulator.apk
+          unzip -t build/Survival21-Emulator.apk
+          unzip -l build/Survival21-Emulator.apk | grep -E 'lib/x86_64/.*\\.so'
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort | tail -n 1)"
+          "$AAPT" dump badging build/Survival21-Emulator.apk | tee /tmp/emulator-badging.txt
+          grep -F "package: name='com.kage049754.survival21'" /tmp/emulator-badging.txt
+          grep -F "native-code: 'x86_64'" /tmp/emulator-badging.txt
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
           name: Survival21-Android-arm64-debug
           path: build/Survival21.apk
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload Android emulator APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Survival21-Android-x86_64-emulator
+          path: build/Survival21-Emulator.apk
           if-no-files-found: error
           retention-days: 14
       - name: Upload Windows Desktop build
@@ -162,3 +179,30 @@ jobs:
           path: build/Survival21.exe
           if-no-files-found: error
           retention-days: 14
+  android-emulator-smoke:
+    name: Android emulator install and launch
+    runs-on: ubuntu-latest
+    needs: android-debug-apk
+    steps:
+      - name: Download x86_64 emulator APK
+        uses: actions/download-artifact@v4
+        with:
+          name: Survival21-Android-x86_64-emulator
+          path: build
+      - name: Install and launch on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            adb install build/Survival21-Emulator.apk
+            adb shell monkey -p com.kage049754.survival21 -c android.intent.category.LAUNCHER 1
+            sleep 20
+            adb shell pidof com.kage049754.survival21
+            adb logcat -d -s AndroidRuntime:E | tee /tmp/survival21-crash.log
+            if grep -E "FATAL EXCEPTION|Process .* has died" /tmp/survival21-crash.log; then
+              echo "SURVIVAL 21 crashed on the Android emulator."
+              exit 1
+            fi
