@@ -146,9 +146,6 @@ func _apply_ui_scale(value: float) -> void:
 	if settings_panel != null:
 		settings_panel.scale = scale_vector
 		settings_panel.pivot_offset = settings_panel.size / 2.0
-	if archive_dialog != null:
-		archive_dialog.scale = scale_vector
-		archive_dialog.pivot_offset = archive_dialog.size / 2.0
 
 func _on_high_contrast_toggled(enabled: bool) -> void:
 	_apply_high_contrast(enabled)
@@ -166,7 +163,10 @@ func _apply_high_contrast(enabled: bool) -> void:
 	accessibility_theme.set_color("font_hover_color", "Button", Color(1.0, 0.88, 0.55))
 	accessibility_theme.set_color("font_pressed_color", "Button", Color(1.0, 1.0, 1.0))
 	accessibility_theme.set_color("font_focus_color", "Button", Color(1.0, 0.88, 0.25))
-	ui_layer.theme = accessibility_theme
+	if root_ui_panel != null:
+		root_ui_panel.theme = accessibility_theme
+	if settings_panel != null:
+		settings_panel.theme = accessibility_theme
 
 func _on_ambience_volume_changed(value: float) -> void:
 	if audio_system != null:
