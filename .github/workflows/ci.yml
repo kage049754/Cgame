@@ -133,10 +133,22 @@ jobs:
           "$AAPT" dump badging build/Survival21.apk | tee /tmp/apk-badging.txt
           grep -F "package: name='com.kage049754.survival21'" /tmp/apk-badging.txt
           grep -F "native-code: 'arm64-v8a'" /tmp/apk-badging.txt
+      - name: Export Windows Desktop build
+        run: |
+          godot --headless --verbose --path . --export-debug "Windows Desktop" build/Survival21.exe
+          test -s build/Survival21.exe
+          file build/Survival21.exe | grep -E 'PE32\+.*x86-64|PE32\+ executable'
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
           name: Survival21-Android-arm64-debug
           path: build/Survival21.apk
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload Windows Desktop build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Survival21-Windows-x86_64-debug
+          path: build/Survival21.exe
           if-no-files-found: error
           retention-days: 14

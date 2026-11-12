@@ -23,7 +23,8 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 - **Gameplay, event, zombie animation, and procedural audio tests:** passed in run #32.
 - **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
-- **Android arm64 APK:** environment build passed in run #31; audio and settings changes are being built in newer runs.
+- **Android arm64 APK:** environment build passed in run #31; audio/settings and Windows export are being added in newer runs.
+- **Windows x86_64 desktop export:** configured in the latest commit; pending CI verification.
 - **Audio settings persistence:** added in the latest commit; pending CI verification.
 - **Emulator/physical-device testing:** not yet performed.
 
@@ -58,7 +59,7 @@ godot --headless --path . --script res://tests/settings_test.gd
 
 ## Android build
 
-GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK, then checks ZIP integrity, package metadata, and native libraries before uploading the artifact.
+GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK and a Windows x86_64 desktop executable. It checks APK ZIP integrity, package metadata, and native libraries before uploading both artifacts.
 
 ## License and assets
 
