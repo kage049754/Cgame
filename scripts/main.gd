@@ -80,6 +80,8 @@ func _ready() -> void:
 	_build_table()
 	_build_ui()
 	progression.load_profile()
+	_update_ui()
+	await RenderingServer.frame_post_draw
 	audio_system = AudioSystemScript.new()
 	add_child(audio_system)
 	_load_settings()

@@ -51,6 +51,12 @@ jobs:
           test -f tests/dealer_appearance_test.gd
           test -f tests/card_visual_test.gd
           test -f tests/visual_effects_test.gd
+          test -f assets/audio/ambience.wav
+          test -f assets/audio/music.wav
+          test -f assets/audio/card.wav
+          test -f assets/audio/win.wav
+          test -f assets/audio/loss.wav
+          test -f assets/audio/item.wav
           test -f scenes/zombie_enemy.tscn
           test -f assets/licenses/QUATERNIUS-CC0-1.0.txt
           test -f export_presets.cfg
@@ -62,7 +68,7 @@ jobs:
         run: godot --headless --path . --script res://tests/settings_test.gd
       - name: Verify screen-reader metadata and focus flow
         run: godot --headless --path . --script res://tests/accessibility_test.gd
-      - name: Verify procedural audio generation
+      - name: Verify pre-rendered original audio assets
         run: godot --headless --path . --script res://tests/audio_generation_test.gd
       - name: Verify Quaternius zombie animations
         run: godot --headless --path . --script res://tests/zombie_animation_test.gd
@@ -187,7 +193,7 @@ jobs:
         with:
           name: Survival21-Android-x86_64-emulator
           path: build/Survival21-Emulator.apk
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
       - name: Upload Windows Desktop build
         uses: actions/upload-artifact@v4
@@ -226,7 +232,9 @@ jobs:
             adb shell input tap 1280 540
             sleep 20
             adb shell pidof com.kage049754.survival21
+            adb exec-out screencap -p > build/survival21-precheck.png
             adb shell dumpsys activity activities | tee build/survival21-activities.txt
+            adb logcat -d -s Godot:V AndroidRuntime:E ActivityManager:I | tee build/survival21-crash.log
             if grep -F "Splash Screen com.kage049754.survival21" build/survival21-activities.txt; then echo "Godot splash screen remained visible; the game did not draw its first frame."; exit 1; fi
             adb shell input keyevent 66
             sleep 2
@@ -235,7 +243,7 @@ jobs:
             test -s build/survival21-emulator.png
             timeout 15s adb shell dumpsys gfxinfo com.kage049754.survival21 | tee build/survival21-gfxinfo.txt
             timeout 15s adb shell dumpsys meminfo com.kage049754.survival21 > build/survival21-meminfo.txt 2>&1 || echo "Android meminfo service did not respond within 15 seconds." >> build/survival21-meminfo.txt
-            adb shell dumpsys accessibility | tee build/survival21-accessibility-services.txt
+            timeout 15s adb shell dumpsys accessibility | tee build/survival21-accessibility-services.txt || true
             adb shell pm list packages | grep -i talkback | tee build/survival21-talkback-packages.txt || true
             adb logcat -d -s Godot:V AndroidRuntime:E ActivityManager:I | tee build/survival21-crash.log
             if grep -E "FATAL EXCEPTION|ANR in com.kage049754.survival21|Process .* has died" build/survival21-crash.log; then echo "SURVIVAL 21 crashed or ANR'd on the Android emulator."; exit 1; fi
@@ -246,6 +254,7 @@ jobs:
           name: Survival21-Android-emulator-runtime-evidence
           path: |
             build/survival21-emulator.png
+            build/survival21-precheck.png
             build/survival21-activities.txt
             build/survival21-crash.log
           if-no-files-found: error

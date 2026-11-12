@@ -156,3 +156,5 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Losses flash the table light red and trigger a short camera shake.
 - Pushes flash the table light violet.
 - The fill light eases back to its baseline color and intensity after each result.
+
+- Ambience, music, and sound effects are pre-rendered WAV resources. The app does not synthesize hundreds of thousands of audio samples on the Android main thread during startup.

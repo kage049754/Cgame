@@ -28,5 +28,9 @@ func _verify_audio(audio_system: Node) -> void:
 		push_error("Original background music stream is missing data or loop configuration.")
 		quit(1)
 		return
-	print("Procedural ambience, original background music, and sound effects passed.")
+	if ambience.loop_mode != AudioStreamWAV.LOOP_FORWARD or ambience.data.size() < 300000:
+		push_error("Ambient audio asset is missing data or loop configuration.")
+		quit(1)
+		return
+	print("Pre-rendered ambience, original background music, and sound-effect assets passed.")
 	quit()

@@ -27,3 +27,7 @@ Quaternius' site-wide Quaternius Asset License (QAL) v1.0, updated 2026-08-28, p
 ## Integration rules
 
 Record the exact pack/version, source page, license, date obtained, and modifications for every imported asset. Prefer glTF/GLB. Do not commit paid-only Source-tier files or redistribute assets as standalone packs.
+
+## Original audio assets
+
+The WAV files in `assets/audio/` are original audio generated for SURVIVAL 21 from the project's own synthesis formulas. They are not third-party assets and require no external attribution.
