@@ -494,6 +494,11 @@ func _build_ui() -> void:
 	hint.add_theme_color_override("font_color", Color(0.72, 0.78, 0.75))
 	column.add_child(hint)
 	_link_focus_order([hit_button, stand_button, double_button, deal_button, medkit_button, marked_button, bell_button, settings_button, archive_button, restart_button])
+	_link_accessibility_flow([
+		title, status_label, dealer_label, player_label, chips_label, opponent_label,
+		event_label, survival_label, hit_button, stand_button, double_button, deal_button,
+		medkit_button, marked_button, bell_button, settings_button, archive_button, restart_button
+	])
 	_link_focus_order([ambience_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
 	hit_button.grab_focus()
 	get_viewport().size_changed.connect(_apply_responsive_layout)
@@ -511,6 +516,10 @@ func _make_button(caption: String, callback: Callable) -> Button:
 	return button
 
 func _button_accessibility_description(caption: String) -> String:
+	if caption.begins_with("MARKED"):
+		return "Reveal the dealer’s hidden card for this hand. One use per run."
+	if caption.begins_with("BELL"):
+		return "Prevent the dealer from drawing for this hand. One use per run."
 	match caption:
 		"HIT":
 			return "Draw one card. Your hand ends automatically if it goes over twenty one."
@@ -522,10 +531,6 @@ func _button_accessibility_description(caption: String) -> String:
 			return "Start the next blackjack hand."
 		"MEDKIT (75)":
 			return "Spend seventy five virtual chips to restore one heart. Usable once per run."
-		"MARKED (1)":
-			return "Reveal the dealer’s hidden card for this hand. One use per run."
-		"BELL (1)":
-			return "Prevent the dealer from drawing for this hand. One use per run."
 		"SETTINGS":
 			return "Open audio volume, interface scale, and high contrast options."
 		"ARCHIVE (0/6)":
@@ -542,6 +547,12 @@ func _link_focus_order(controls: Array[Control]) -> void:
 		var current := controls[index]
 		var next := controls[(index + 1) % controls.size()]
 		current.focus_next = current.get_path_to(next)
+
+func _link_accessibility_flow(controls: Array[Control]) -> void:
+	for index in range(controls.size() - 1):
+		var current := controls[index]
+		var next := controls[index + 1]
+		current.accessibility_flow_to_nodes = [current.get_path_to(next)]
 
 func _create_deck() -> void:
 	deck.clear()

@@ -28,6 +28,12 @@ func _initialize() -> void:
 	_expect(double_button.accessibility_description.contains("Double your current wager"), "Double button should explain its cost and action")
 	_expect(next_hand.accessibility_name == "Next Hand", "Next hand should have an accessible name")
 	_expect(hit.get_node_or_null(hit.focus_next) == stand, "Keyboard focus should move from Hit to Stand")
+	var status := scene.get("status_label") as Label
+	var dealer := scene.get("dealer_label") as Label
+	_expect(status.get_node_or_null(status.accessibility_flow_to_nodes[0]) == dealer, "Screen-reader flow should move from status to dealer hand")
+	_expect(dealer.get_node_or_null(dealer.accessibility_flow_to_nodes[0]) == (scene.get("player_label") as Label), "Screen-reader flow should move from dealer to player hand")
+	_expect((scene.get("marked_button") as Button).accessibility_description.contains("hidden card"), "Marked Card should explain its effect")
+	_expect((scene.get("bell_button") as Button).accessibility_description.contains("dealer from drawing"), "House Bell should explain its effect")
 	_expect(stand.get_node_or_null(stand.focus_next) == double_button, "Keyboard focus should move from Stand to Double")
 	_expect(double_button.get_node_or_null(double_button.focus_next) == next_hand, "Keyboard focus should move from Double to Next Hand")
 	scene.call("_toggle_settings")
