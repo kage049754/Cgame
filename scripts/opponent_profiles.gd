@@ -4,7 +4,7 @@ extends RefCounted
 const BlackjackRules = preload("res://scripts/blackjack_rules.gd")
 
 static func tier_for_wins(wins: int, starting_tier: int = 0) -> int:
-	return clampi(clampi(starting_tier, 0, 2) + maxi(0, wins) / 2, 0, 2)
+	return clampi(clampi(starting_tier, 0, 2) + floori(float(maxi(0, wins)) / 2.0), 0, 2)
 
 static func highest_unlocked_tier(requested_tier: int, unlocked: Array) -> int:
 	var requested := clampi(requested_tier, 0, 2)

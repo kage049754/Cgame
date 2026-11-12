@@ -703,7 +703,7 @@ func _on_double() -> void:
 	current_bet *= 2
 	_draw_card(player_hand)
 	if not Rules.is_bust(player_hand):
-		while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active, bool(current_event.get("force_soft_17", false))):
+		while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active, bool(current_event.get("force_soft_17", false)), run_starting_tier):
 			_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()

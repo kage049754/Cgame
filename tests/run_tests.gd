@@ -82,6 +82,8 @@ func _test_soft_hands_and_opponent_profiles() -> void:
 	_expect(Opponents.profile_for_wins(2).get("name") == "THE COLLECTOR", "Second opponent profile should be Collector")
 	_expect(Opponents.profile_for_wins(4).get("name") == "THE HOUSE", "Final opponent profile should be The House")
 	_expect(Opponents.profile_for_wins(0, 1).get("name") == "THE COLLECTOR", "Selecting Collector should start a run against Collector")
+	_expect(Opponents.profile_for_wins(2, 1).get("name") == "THE HOUSE", "Collector-start run should escalate to The House after two wins")
+	_expect(Opponents.profile_for_wins(0, 2).get("stand_at") == 18, "House-start challenge should use the harder stand threshold")
 	_expect(Opponents.profile_for_wins(2, 1).get("name") == "THE HOUSE", "A Collector-start run should escalate to The House after two wins")
 	_expect(Opponents.profile_for_wins(0, 2).get("name") == "THE HOUSE", "Selecting The House should start directly against The House")
 	_expect(Opponents.highest_unlocked_tier(1, []) == 0, "Locked Collector should fall back to Night Dealer")
