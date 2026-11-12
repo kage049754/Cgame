@@ -78,7 +78,7 @@ jobs:
       - name: Install download utilities
         run: |
           apt-get update -qq
-          apt-get install -y -qq curl unzip file file
+          apt-get install -y -qq curl unzip file
       - name: Install required Android SDK components
         run: |
           SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"

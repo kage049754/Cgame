@@ -494,6 +494,7 @@ func _finish_round() -> void:
 	round_active = false
 	var opponent_name := str(Opponents.profile_for_wins(survival.wins).get("name", "UNKNOWN"))
 	var result := Rules.outcome(player_hand, dealer_hand)
+	var defeated_opponent := str(Opponents.profile_for_wins(survival.wins).get("name", "UNKNOWN"))
 	survival.resolve_hand(result)
 	if audio_system != null:
 		if result == "win":

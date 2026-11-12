@@ -8,6 +8,8 @@ const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
 
+var failures := 0
+
 func _initialize() -> void:
 	_test_values()
 	_test_aces()
@@ -20,13 +22,17 @@ func _initialize() -> void:
 	_test_encounter_events()
 	_test_save_migration()
 	_test_persistent_progression()
-	print("All Survival 21 tests passed.")
-	quit()
+	if failures > 0:
+		push_error("Survival 21 test suite failed with %d assertion(s)." % failures)
+		quit(1)
+	else:
+		print("All Survival 21 tests passed.")
+		quit()
 
 func _expect(condition: bool, message: String) -> void:
 	if not condition:
+		failures += 1
 		push_error("FAILED: " + message)
-		quit(1)
 
 func _test_values() -> void:
 	_expect(Rules.hand_value([{"rank": 10}, {"rank": 9}]) == 19, "10 + 9 should equal 19")
@@ -173,8 +179,9 @@ func _test_persistent_progression() -> void:
 	_expect(profile.unlocked.has("RELIC_PAIR"), "Using both tactical items should unlock their archive entry")
 	for i in range(8):
 		profile.record_hand("push", "THE NIGHT DEALER", "")
-	_expect(profile.unlocked.has("TEN_HANDS"), "Ten completed hands should unlock the regular entry")
+	_expect(not profile.unlocked.has("TEN_HANDS"), "Nine completed hands should not unlock the regular entry")
 	profile.record_hand("win", "THE HOUSE", "victory")
+	_expect(profile.unlocked.has("TEN_HANDS"), "Ten completed hands should unlock the regular entry")
 	_expect(profile.unlocked.has("HOUSE") and profile.unlocked.has("ESCAPE"), "Defeating The House and escaping should unlock both entries")
 	_expect(profile.save_profile(path), "Progression profile should save")
 	var restored := ProgressionState.new()

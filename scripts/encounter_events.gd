@@ -17,15 +17,6 @@ static func event_for_round(round_number: int) -> Dictionary:
 			"push_bonus": 0,
 			"force_soft_17": false
 		}
-	if round_number > 0 and round_number % 4 == 0:
-		return {
-			"id": "HOUSE_FAVOR",
-			"name": "HOUSE FAVOR",
-			"description": "A push returns 10 bonus chips.",
-			"loss_tax": 0,
-			"push_bonus": 10,
-			"force_soft_17": false
-		}
 	if round_number > 0 and round_number % 8 == 0:
 		return {
 			"id": "DEALERS_DEBT",
@@ -36,6 +27,15 @@ static func event_for_round(round_number: int) -> Dictionary:
 			"win_bonus": 0,
 			"dealer_bust_bonus": 20,
 			"player_bust_tax": 0,
+			"force_soft_17": false
+		}
+	if round_number > 0 and round_number % 4 == 0:
+		return {
+			"id": "HOUSE_FAVOR",
+			"name": "HOUSE FAVOR",
+			"description": "A push returns 10 bonus chips.",
+			"loss_tax": 0,
+			"push_bonus": 10,
 			"force_soft_17": false
 		}
 	if round_number > 0 and round_number % 7 == 0:
