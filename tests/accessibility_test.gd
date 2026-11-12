@@ -18,6 +18,7 @@ func _initialize() -> void:
 	var stand := scene.get("stand_button") as Button
 	var double_button := scene.get("double_button") as Button
 	var next_hand := scene.get("deal_button") as Button
+	var starting_selector := scene.get("starting_opponent_selector") as OptionButton
 	var ambience := scene.get("ambience_slider") as HSlider
 	var effects := scene.get("effects_slider") as HSlider
 	var scale := scene.get("ui_scale_slider") as HSlider
@@ -49,7 +50,6 @@ func _initialize() -> void:
 	_expect(music.accessibility_name == "Background music volume", "Music slider should be named")
 	_expect(scale.accessibility_name == "Interface scale", "Scale slider should be named")
 	_expect(contrast.accessibility_name == "High contrast", "Contrast toggle should be named")
-	var starting_selector := scene.get("starting_opponent_selector") as OptionButton
 	var starting_label := scene.find_child("StartingOpponentLabel", true, false) as Label
 	_expect(starting_selector.accessibility_name == "Starting opponent", "Starting opponent selector should be accessible")
 	_expect(starting_selector.is_item_disabled(1), "Collector should remain locked until defeated")
