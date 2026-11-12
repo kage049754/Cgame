@@ -8,15 +8,6 @@ static func loss_tax_for(event: Dictionary, player_bust: bool) -> int:
 	return int(event.get("loss_tax", 0)) + (int(event.get("player_bust_tax", 0)) if player_bust else 0)
 
 static func event_for_round(round_number: int) -> Dictionary:
-	if round_number > 0 and round_number % 5 == 0:
-		return {
-			"id": "BLOOD_TOLL",
-			"name": "BLOOD TOLL",
-			"description": "A loss costs 10 extra chips.",
-			"loss_tax": 10,
-			"push_bonus": 0,
-			"force_soft_17": false
-		}
 	if round_number > 0 and round_number % 8 == 0:
 		return {
 			"id": "DEALERS_DEBT",
@@ -36,6 +27,15 @@ static func event_for_round(round_number: int) -> Dictionary:
 			"description": "A push returns 10 bonus chips.",
 			"loss_tax": 0,
 			"push_bonus": 10,
+			"force_soft_17": false
+		}
+	if round_number > 0 and round_number % 5 == 0:
+		return {
+			"id": "BLOOD_TOLL",
+			"name": "BLOOD TOLL",
+			"description": "A loss costs 10 extra chips.",
+			"loss_tax": 10,
+			"push_bonus": 0,
 			"force_soft_17": false
 		}
 	if round_number > 0 and round_number % 7 == 0:
