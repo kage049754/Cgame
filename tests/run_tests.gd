@@ -6,6 +6,8 @@ func _initialize() -> void:
 	_test_values()
 	_test_aces()
 	_test_outcomes()
+	_test_natural_blackjack_priority()
+	print("All Survival 21 blackjack rule tests passed.")
 	quit()
 
 func _expect(condition: bool, message: String) -> void:
@@ -22,6 +24,13 @@ func _test_values() -> void:
 func _test_aces() -> void:
 	_expect(Rules.hand_value([{"rank": 1}, {"rank": 1}, {"rank": 9}]) == 21, "Multiple aces should downgrade safely")
 	_expect(Rules.hand_value([{"rank": 1}, {"rank": 9}, {"rank": 5}]) == 15, "Soft ace should downgrade on bust")
+
+func _test_natural_blackjack_priority() -> void:
+	var natural := [{"rank": 1}, {"rank": 13}]
+	var ordinary_21 := [{"rank": 7}, {"rank": 7}, {"rank": 7}]
+	_expect(Rules.outcome(natural, natural) == "push", "Two natural blackjacks should push")
+	_expect(Rules.outcome(natural, ordinary_21) == "win", "Natural blackjack should beat a three-card 21")
+	_expect(Rules.outcome(ordinary_21, natural) == "lose", "Dealer natural blackjack should beat a three-card 21")
 
 func _test_outcomes() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 7}]) == "win", "Higher hand should win")
