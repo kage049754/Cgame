@@ -53,8 +53,6 @@ jobs:
         run: godot --headless --path . --script res://tests/run_tests.gd
       - name: Verify settings persistence
         run: godot --headless --path . --script res://tests/settings_test.gd
-      - name: Verify progression and save migration
-        run: godot --headless --path . --script res://tests/run_tests.gd
       - name: Verify procedural audio generation
         run: godot --headless --path . --script res://tests/audio_generation_test.gd
       - name: Verify Quaternius zombie animations
@@ -74,7 +72,7 @@ jobs:
       - name: Install download utilities
         run: |
           apt-get update -qq
-          apt-get install -y -qq curl unzip
+          apt-get install -y -qq curl unzip file
       - name: Install required Android SDK components
         run: |
           SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"

@@ -26,9 +26,9 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - **Gameplay, initial encounter-event, zombie animation, and procedural audio tests:** passed in run #35.
 - **Three additional encounter events:** implemented with settlement helper tests; pending next CI validation.
 - **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
-- **Persistent profile progression and save migration:** implemented in the latest commit; pending CI.
+- **Persistent profile progression and save migration:** implemented in commit `9f47b8b`; pending CI verification.
 - **Android arm64 APK:** environment build passed in run #31; audio/settings and Windows export are being added in newer runs.
-- **Windows x86_64 desktop export:** configured in the latest commit; pending CI verification.
+- **Windows x86_64 desktop export:** export succeeded in run #35, but the container lacked the `file` utility needed by the PE verification step. The workflow now installs that utility before retrying.
 - **Audio settings persistence:** added in the latest commit; pending CI verification.
 - **Emulator/physical-device testing:** not yet performed.
 
