@@ -23,16 +23,11 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Gameplay, initial encounter-event, zombie animation, and procedural audio tests:** passed in run #35.
-- **Three additional encounter events:** round-eight priority and the assertion exit code are corrected. The latest CI run exposed a shell mismatch (`sh` does not support `set -o pipefail`); the smoke-test step now explicitly uses Bash.
-- **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
-- **Persistent profile progression and save migration:** implemented in commit `9f47b8b`; test expectations and opponent-defeat tracking are being corrected and revalidated.
-- **Android arm64 APK:** environment build passed in run #31; audio/settings and Windows export are being added in newer runs.
-- **Windows x86_64 desktop export:** export succeeded in run #35, but the container lacked the `file` utility needed by the PE verification step. The workflow now installs that utility before retrying.
-- **Audio settings persistence:** added in the latest commit; pending CI verification.
-- **Emulator/physical-device testing:** not yet performed.
-
-[Run #31 Android environment build](https://github.com/kage049754/Cgame/actions/runs/43213885678)
+- **Gameplay, event settlement, opponent AI, progression unlocks, save migration, settings persistence, audio generation, zombie animation playback, and main-scene smoke test:** all passed in [run #44](https://github.com/kage049754/Cgame/actions/runs/43216815391).
+- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #44. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
+- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #44. The game data is embedded in the executable.
+- **Artifact downloads:** available from run #44; see `BUILD_VERIFICATION.md` for sizes and checksums.
+- **Physical Android device, emulator, and Windows runtime playtesting:** not yet performed. Automated build and static artifact checks do not prove runtime behavior on those devices.
 
 ## Roadmap
 
