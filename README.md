@@ -16,7 +16,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
 - Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic reacts to encounter events and round outcomes with Idle, Idle_Attack, HitReact, Punch, and Death animations; its threat level changes its position as it approaches or retreats from the table.
 - Original procedural horror ambience, looping dark ambient background music, and synthesized card, win, loss, and item sound effects; separate ambience, music, and effects volume controls.
-- In-game settings for ambience/music/effects volume, UI scaling (80%–130%), selectable starting opponents, and high-contrast text; preferences persist. Godot 4.7.2 AccessKit support adds accessible names, descriptions, focus order, and polite live game-status announcements.
+- In-game settings for ambience/music/effects volume, UI scaling (80%–130%), selectable starting opponents, and high-contrast text; preferences persist. Accessible names, descriptions, focus order, and polite live game-status announcements are implemented. Godot 4.7.2 stable provides AccessKit screen-reader support on desktop; Android TalkBack support is not yet available in this stable engine release.
 - Persistent six-entry survival archive with lifetime statistics, lore unlocks, and achievement tracking across runs.
 - Save migration from versions 1 and 2 to version 3, preserving existing run data and adding the selected starting opponent.
 - Automated blackjack, survival, opponent AI, item, event, save/load, animation, audio, and settings tests.

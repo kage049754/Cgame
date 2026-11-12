@@ -52,9 +52,18 @@ Run #53 passed:
 
 ## Android emulator runtime
 
+- Run #71 successfully installed the x86_64 APK and launched the process, but the first-window draw was not completed within the smoke-test window. The activity dump still showed the Android splash screen and an ANR dialog for the Android `system` process; `gfxinfo` reported only four rendered frames with 100% janky frames. This is not a valid gameplay runtime pass. Multiple emulator jobs were running concurrently, so the workflow now serializes emulator tests and dismisses Android's immersive-mode confirmation before checking that the splash screen disappears.
+- `dumpsys meminfo` timed out in the emulator image; the next run caps this query at 15 seconds and records the limitation instead of blocking.
+- UIAutomator returned `null root node`. Godot 4.7.2 stable does not provide the Android AccessKit backend, so this cannot be used to validate TalkBack in this version.
+
 - Workflow includes an x86_64 Pixel 2 emulator install/launch, active-activity check, keyboard activation, process-alive check, screenshot, and AndroidRuntime log scan.
 - Run #57 installed and launched the app and confirmed its process stayed alive for 20 seconds. It failed afterward because the emulator action executes each script line separately and the multi-line shell `if` was split; this is corrected to a single-line condition. The emulator also reported an ANR in the Android phone service under high CPU pressure, not in the game process.
 - Emulator run also collects Android `gfxinfo` frame statistics and `meminfo` process memory after the initial gameplay interaction. Screenshot, accessibility hierarchy, activity dump, performance snapshots, and crash logs are uploaded even when a later assertion fails.
+
+## Screen reader platform support
+
+- Desktop: Godot 4.7.2 AccessKit metadata and traversal are covered by headless tests; actual NVDA/VoiceOver/Orca speech still needs target-device testing.
+- Android: TalkBack cannot be claimed as supported by Godot 4.7.2 stable. Godot's official 4.8 development notes announced the Android AccessKit backend, but 4.8 is still pre-release as of 2026-11-12; the production project remains on stable 4.7.2.
 
 ## Not yet verified
 
