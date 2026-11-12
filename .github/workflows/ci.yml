@@ -35,6 +35,7 @@ jobs:
           test -f scripts/settings_store.gd
           test -f scripts/progression.gd
           test -f scripts/controller_input.gd
+          test -f scripts/accessibility_layout.gd
           test -f tests/settings_test.gd
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb

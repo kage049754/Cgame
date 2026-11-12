@@ -14,6 +14,7 @@ const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const AudioSystemScript = preload("res://scripts/procedural_audio.gd")
 const SettingsStore = preload("res://scripts/settings_store.gd")
 const ControllerInput = preload("res://scripts/controller_input.gd")
+const AccessibilityLayout = preload("res://scripts/accessibility_layout.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
@@ -139,13 +140,25 @@ func _on_ui_scale_changed(value: float) -> void:
 
 func _apply_ui_scale(value: float) -> void:
 	ui_scale_factor = clampf(value, 0.8, 1.3)
-	var scale_vector := Vector2.ONE * ui_scale_factor
-	if root_ui_panel != null:
-		root_ui_panel.scale = scale_vector
-		root_ui_panel.pivot_offset = Vector2.ZERO
-	if settings_panel != null:
-		settings_panel.scale = scale_vector
-		settings_panel.pivot_offset = settings_panel.size / 2.0
+	_apply_responsive_layout()
+
+func _apply_responsive_layout() -> void:
+	if root_ui_panel == null or settings_panel == null:
+		return
+	var viewport_size := get_viewport().get_visible_rect().size
+	var fit_scale := AccessibilityLayout.fit_scale(viewport_size, Vector2(460, 470), 24.0)
+	var final_scale := fit_scale * ui_scale_factor
+	var scale_vector := Vector2.ONE * final_scale
+	root_ui_panel.position = Vector2(12, 12)
+	root_ui_panel.scale = scale_vector
+	root_ui_panel.pivot_offset = Vector2.ZERO
+	settings_panel.scale = scale_vector
+	settings_panel.pivot_offset = settings_panel.size / 2.0
+	if archive_dialog != null:
+		archive_dialog.min_size = Vector2i(
+			mini(520, maxi(280, int(viewport_size.x * 0.9))),
+			mini(420, maxi(240, int(viewport_size.y * 0.75)))
+		)
 
 func _on_high_contrast_toggled(enabled: bool) -> void:
 	_apply_high_contrast(enabled)
@@ -448,6 +461,8 @@ func _build_ui() -> void:
 	hint.add_theme_color_override("font_color", Color(0.72, 0.78, 0.75))
 	column.add_child(hint)
 	hit_button.grab_focus()
+	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
 
 func _make_button(caption: String, callback: Callable) -> Button:
 	var button := Button.new()

@@ -8,6 +8,7 @@ const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
 const ControllerInput = preload("res://scripts/controller_input.gd")
+const AccessibilityLayout = preload("res://scripts/accessibility_layout.gd")
 
 var failures := 0
 
@@ -24,6 +25,7 @@ func _initialize() -> void:
 	_test_save_migration()
 	_test_persistent_progression()
 	_test_controller_input_mapping()
+	_test_responsive_ui_scale()
 	if failures > 0:
 		push_error("Survival 21 test suite failed with %d assertion(s)." % failures)
 		quit(1)
@@ -169,6 +171,15 @@ func _test_save_migration() -> void:
 	var upgraded := ConfigFile.new()
 	_expect(upgraded.load(path) == OK and int(upgraded.get_value("state", "save_version", 0)) == SaveSystem.SAVE_VERSION, "Migrated save should be persisted at the new version")
 	SaveSystem.delete_state(path)
+
+func _test_responsive_ui_scale() -> void:
+	var landscape := AccessibilityLayout.fit_scale(Vector2(1280, 720), Vector2(460, 470))
+	var compact_phone := AccessibilityLayout.fit_scale(Vector2(360, 800), Vector2(460, 470))
+	var small_landscape := AccessibilityLayout.fit_scale(Vector2(320, 480), Vector2(460, 470))
+	_expect(is_equal_approx(landscape, 1.0), "Large landscape viewport should keep the default layout scale")
+	_expect(compact_phone < 1.0 and compact_phone > 0.5, "Compact phone viewport should scale the interface down")
+	_expect(small_landscape < compact_phone, "Smaller viewport should use a smaller interface scale")
+	_expect(AccessibilityLayout.fit_scale(Vector2.ZERO, Vector2(460, 470)) == 1.0, "Invalid viewport should use a safe default scale")
 
 func _test_controller_input_mapping() -> void:
 	_expect(ControllerInput.action_for_button(JOY_BUTTON_A) == "hit", "Gamepad A should hit")

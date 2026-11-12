@@ -104,3 +104,5 @@ All game buttons are keyboard-focusable and expose tooltips.
 - The zombie switches to Idle_Attack during Restless Dealer encounters.
 - After a hand, it reacts with HitReact after a player win, Punch after a loss, and Idle_Attack after a push.
 - Completing a run triggers the zombie Death animation.
+
+- The interface automatically scales down to fit smaller viewport sizes and reflows the archive dialog bounds when the window changes size.

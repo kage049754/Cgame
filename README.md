@@ -44,7 +44,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Audio volume settings and persistence.
 - [x] Six encounter events and outcome-reactive zombie behavior.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
-- [ ] Verify TalkBack/screen-reader behavior, additional aspect ratios, performance, and physical-device input.
+- [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [ ] Verify TalkBack/screen-reader behavior, performance, and physical-device input.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.
 
 ## Running locally
