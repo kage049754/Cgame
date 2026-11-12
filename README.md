@@ -22,7 +22,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - **Gameplay and item tests:** passed in run #24 before save/load changes.
 - **Save/load round-trip tests:** added in the latest commit; pending CI verification.
 - **Quaternius model import and scene smoke test:** passed in run #20.
-- **Android APK export:** previous runs failed on incomplete Android SDK components. The latest workflow installs Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, and CMake 3.10.2.4988404; export verification is pending.
+- **Android APK export:** previous runs failed on incomplete Android SDK components and the project's disabled ETC2/ASTC import setting. The project now enables the required mobile texture compression; the latest workflow installs Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, and CMake 3.10.2.4988404; export verification is pending.
 - **APK integrity, package metadata, arm64 library inspection, and device testing:** not yet passed.
 
 [Run #24](https://github.com/kage049754/Cgame/actions/runs/43211783716)
