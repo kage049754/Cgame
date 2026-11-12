@@ -5,6 +5,7 @@ const SurvivalRunState = preload("res://scripts/survival_run.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
+const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 
 func _initialize() -> void:
 	_test_values()
@@ -15,6 +16,7 @@ func _initialize() -> void:
 	_test_survival_progression()
 	_test_survival_items()
 	_test_save_system()
+	_test_encounter_events()
 	print("All Survival 21 tests passed.")
 	quit()
 
@@ -61,6 +63,19 @@ func _test_outcomes() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 8}]) == "push", "Equal hands should push")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 9}, {"rank": 5}], [{"rank": 10}, {"rank": 7}]) == "lose", "Player bust should lose")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 9}, {"rank": 5}]) == "win", "Dealer bust should lose")
+
+func _test_encounter_events() -> void:
+	var quiet := EncounterEventsState.event_for_round(1)
+	var restless := EncounterEventsState.event_for_round(3)
+	var favor := EncounterEventsState.event_for_round(4)
+	var toll := EncounterEventsState.event_for_round(5)
+	_expect(quiet.get("id") == "QUIET_TABLE", "Ordinary rounds should use the quiet-table event")
+	_expect(restless.get("force_soft_17", false), "Every third round should force soft-17 dealer draws")
+	_expect(favor.get("push_bonus", 0) == 10, "House Favor should add ten chips on a push")
+	_expect(toll.get("loss_tax", 0) == 10, "Blood Toll should charge ten extra chips after a loss")
+	var soft_seventeen := [{"rank": 1}, {"rank": 6}]
+	_expect(Opponents.should_dealer_hit(soft_seventeen, 0, false, true), "Restless Dealer event should override Night Dealer soft-17 behavior")
+	_expect(not Opponents.should_dealer_hit(soft_seventeen, 0, true, true), "House Bell should override the Restless Dealer event")
 
 func _test_save_system() -> void:
 	var path := "user://survival21_test.cfg"

@@ -32,3 +32,11 @@
 - The game saves the last completed round's chips, health, wins/losses/pushes, medkit use, and remaining tactical items to `user://survival21.cfg`.
 - A new hand begins when a saved unfinished run is restored. The current hand and deck are not resumed.
 - The save is cleared when the player explicitly restarts the run.
+
+## Encounter events
+
+- Quiet Table: no modifier.
+- Restless Dealer (every third round): forces the dealer to hit soft 17, except when House Bell is active.
+- House Favor (every fourth round): adds 10 virtual chips to a push.
+- Blood Toll (every fifth round): removes 10 additional virtual chips after a loss.
+- Event cycle continues across completed-round saves.

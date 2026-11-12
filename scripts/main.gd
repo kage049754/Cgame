@@ -5,6 +5,7 @@ const Opponents = preload("res://scripts/opponent_profiles.gd")
 const DealerCharacterScene = preload("res://scenes/dealer_character.tscn")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
+const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -21,6 +22,7 @@ var dealer_label: Label
 var chips_label: Label
 var survival_label: Label
 var opponent_label: Label
+var event_label: Label
 var medkit_button: Button
 var marked_button: Button
 var bell_button: Button
@@ -29,6 +31,7 @@ var survival := SurvivalRun.new()
 var items := SurvivalItemsState.new()
 var dealer_revealed := false
 var house_bell_active := false
+var current_event: Dictionary = {}
 var hit_button: Button
 var stand_button: Button
 var deal_button: Button
@@ -50,6 +53,7 @@ func _save_run() -> void:
 	var state := {
 		"save_version": SaveSystem.SAVE_VERSION,
 		"chips": chips,
+		"round_number": round_number,
 		"health": survival.health,
 		"wins": survival.wins,
 		"losses": survival.losses,
@@ -67,6 +71,7 @@ func _restore_run() -> bool:
 	if state.is_empty():
 		return false
 	chips = maxi(0, int(state.get("chips", STARTING_CHIPS)))
+	round_number = maxi(0, int(state.get("round_number", 0)))
 	survival.health = clampi(int(state.get("health", SurvivalRun.STARTING_HEALTH)), 0, SurvivalRun.MAX_HEALTH)
 	survival.wins = maxi(0, int(state.get("wins", 0)))
 	survival.losses = maxi(0, int(state.get("losses", 0)))
@@ -143,7 +148,7 @@ func _build_ui() -> void:
 	add_child(layer)
 	var panel := PanelContainer.new()
 	panel.position = Vector2(22, 18)
-	panel.size = Vector2(460, 390)
+	panel.size = Vector2(460, 420)
 	layer.add_child(panel)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 9)
@@ -164,6 +169,8 @@ func _build_ui() -> void:
 	column.add_child(chips_label)
 	opponent_label = Label.new()
 	column.add_child(opponent_label)
+	event_label = Label.new()
+	column.add_child(event_label)
 	survival_label = Label.new()
 	column.add_child(survival_label)
 
@@ -226,6 +233,7 @@ func _new_round() -> void:
 	round_number += 1
 	dealer_revealed = false
 	house_bell_active = false
+	current_event = EncounterEventsState.event_for_round(round_number)
 	current_bet = mini(BASE_BET, chips)
 	chips -= current_bet
 	player_hand.clear()
@@ -236,7 +244,7 @@ func _new_round() -> void:
 	_draw_card(player_hand)
 	_draw_card(dealer_hand)
 	round_active = true
-	status_label.text = "Round %d — choose your move." % round_number
+	status_label.text = "Round %d — %s." % [round_number, current_event.get("name", "QUIET TABLE")]
 	if Rules.is_blackjack(player_hand) or Rules.is_blackjack(dealer_hand):
 		_finish_round()
 	_update_ui()
@@ -269,7 +277,7 @@ func _on_hit() -> void:
 func _on_stand() -> void:
 	if not round_active:
 		return
-	while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active):
+	while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active, bool(current_event.get("force_soft_17", false))):
 		_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
@@ -282,7 +290,7 @@ func _on_double() -> void:
 	current_bet *= 2
 	_draw_card(player_hand)
 	if not Rules.is_bust(player_hand):
-		while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active):
+		while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active, bool(current_event.get("force_soft_17", false))):
 			_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
@@ -325,9 +333,11 @@ func _finish_round() -> void:
 		chips += current_bet * 2
 		status_label.text = "You survived this hand. You win."
 	elif result == "push":
-		chips += current_bet
-		status_label.text = "Push. Your bet is returned."
+		var bonus := int(current_event.get("push_bonus", 0))
+		chips += current_bet + bonus
+		status_label.text = "Push. Your bet is returned%s." % (" + %d bonus chips" % bonus if bonus > 0 else "")
 	else:
+		chips = maxi(0, chips - int(current_event.get("loss_tax", 0)))
 		status_label.text = "You lost this hand."
 	if survival.ending == "victory":
 		status_label.text = "THE HOUSE IS BROKEN. YOU SURVIVED."
@@ -370,6 +380,7 @@ func _update_ui() -> void:
 	chips_label.text = "CHIPS  %d" % chips
 	var opponent_profile := Opponents.profile_for_wins(survival.wins)
 	opponent_label.text = "OPPONENT  %s — %s" % [opponent_profile.get("name", "UNKNOWN"), opponent_profile.get("tell", "")]
+	event_label.text = "EVENT  %s — %s" % [current_event.get("name", "QUIET TABLE"), current_event.get("description", "")]
 	survival_label.text = "HEARTS  %s   |   WINS  %d / %d   |   LOSSES  %d" % ["♥".repeat(survival.health) + "♡".repeat(SurvivalRun.MAX_HEALTH - survival.health), survival.wins, SurvivalRun.REQUIRED_WINS, survival.losses]
 	hit_button.disabled = not round_active
 	stand_button.disabled = not round_active

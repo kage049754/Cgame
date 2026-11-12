@@ -25,7 +25,7 @@ static func profile_for_wins(wins: int) -> Dictionary:
 		"hit_soft_17": false
 	}
 
-static func should_dealer_hit(cards: Array, wins: int, house_bell_active: bool = false) -> bool:
+static func should_dealer_hit(cards: Array, wins: int, house_bell_active: bool = false, force_soft_17: bool = false) -> bool:
 	if house_bell_active:
 		return false
 	var profile := profile_for_wins(wins)
@@ -33,6 +33,6 @@ static func should_dealer_hit(cards: Array, wins: int, house_bell_active: bool =
 	var stand_at := int(profile.get("stand_at", 17))
 	if value < stand_at:
 		return true
-	if value == 17 and bool(profile.get("hit_soft_17", false)) and BlackjackRules.is_soft(cards):
+	if value == 17 and (bool(profile.get("hit_soft_17", false)) or force_soft_17) and BlackjackRules.is_soft(cards):
 		return true
 	return false
