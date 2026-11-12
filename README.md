@@ -12,7 +12,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Survival run with three hearts, five wins to escape, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
-- Encounter events: Restless Dealer forces soft-17 draws, House Favor adds chips on a push, and Blood Toll deducts extra chips after a loss.
+- Encounter events: Restless Dealer forces soft-17 draws, House Favor rewards pushes, Blood Toll taxes losses, Whispering Table rewards wins, Rust Storm taxes player busts, and Dealer's Debt rewards dealer busts.
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
 - Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic as an animated threat with Idle and Idle_Attack playback.
 - Original procedural horror ambience and synthesized card, win, loss, and item sound effects.
@@ -23,7 +23,8 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Gameplay, event, zombie animation, and procedural audio tests:** passed in run #32.
+- **Gameplay, initial encounter-event, zombie animation, and procedural audio tests:** passed in run #35.
+- **Three additional encounter events:** implemented with settlement helper tests; pending next CI validation.
 - **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
 - **Persistent profile progression and save migration:** implemented in the latest commit; pending CI.
 - **Android arm64 APK:** environment build passed in run #31; audio/settings and Windows export are being added in newer runs.
@@ -40,7 +41,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Opponent personalities and encounter-specific dealer behavior.
 - [x] Survival health, progression, medkit, and tactical items.
 - [x] Completed-round save/load and run restart.
-- [x] Initial encounter events.
+- [x] Six encounter events with distinct payout, dealer, and bust modifiers.
 - [x] Quaternius dealer, zombie, and environment models; zombie animation playback.
 - [x] Procedural horror ambience and core sound effects.
 - [x] Keyboard controls and audio volume settings (settings tests pending).

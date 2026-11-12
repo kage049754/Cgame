@@ -503,17 +503,17 @@ func _finish_round() -> void:
 		else:
 			audio_system.call("play_push")
 	if Rules.is_blackjack(player_hand) and result == "win":
-		chips += int(round(float(current_bet) * 2.5))
+		chips += int(round(float(current_bet) * 2.5)) + EncounterEventsState.win_bonus_for(current_event, Rules.is_bust(dealer_hand))
 		status_label.text = "BLACKJACK! You win 3:2."
 	elif result == "win":
-		chips += current_bet * 2
+		chips += current_bet * 2 + EncounterEventsState.win_bonus_for(current_event, Rules.is_bust(dealer_hand))
 		status_label.text = "You survived this hand. You win."
 	elif result == "push":
 		var bonus := int(current_event.get("push_bonus", 0))
 		chips += current_bet + bonus
 		status_label.text = "Push. Your bet is returned%s." % (" + %d bonus chips" % bonus if bonus > 0 else "")
 	else:
-		chips = maxi(0, chips - int(current_event.get("loss_tax", 0)))
+		chips = maxi(0, chips - EncounterEventsState.loss_tax_for(current_event, Rules.is_bust(player_hand)))
 		status_label.text = "You lost this hand."
 	if survival.ending == "victory":
 		status_label.text = "THE HOUSE IS BROKEN. YOU SURVIVED."

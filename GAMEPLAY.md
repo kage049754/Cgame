@@ -77,3 +77,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Six unlocks: complete the first hand, defeat the Collector, defeat The House, escape a run, complete ten hands, and use both tactical items.
 - Unlocks reveal short lore entries in the Archive panel; locked entries show their requirement.
 - Current run saves migrate from version 1 to version 2 in place. Existing chip, health, win/loss, round, and item data is retained; missing fields receive safe defaults.
+
+## Additional encounter events
+
+- Whispering Table (every sixth round): every win grants 15 extra virtual chips.
+- Rust Storm (every seventh round): a player bust costs 15 additional virtual chips.
+- Dealer's Debt (every eighth round): beating a dealer who busts grants 20 extra virtual chips.
+- Existing event priority is preserved when round intervals overlap.

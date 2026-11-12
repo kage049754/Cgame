@@ -47,6 +47,17 @@ func _test_natural_blackjack_priority() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], natural) == "lose", "Dealer natural blackjack should beat a non-natural player hand")
 
 func _test_soft_hands_and_opponent_profiles() -> void:
+	var whispering := EncounterEventsState.event_for_round(6)
+	var rust_storm := EncounterEventsState.event_for_round(7)
+	var debt := EncounterEventsState.event_for_round(8)
+	_expect(whispering.get("id") == "WHISPERING_TABLE", "Round six should use Whispering Table")
+	_expect(EncounterEventsState.win_bonus_for(whispering, false) == 15, "Whispering Table should add fifteen chips to a normal win")
+	_expect(rust_storm.get("id") == "RUST_STORM", "Round seven should use Rust Storm")
+	_expect(EncounterEventsState.loss_tax_for(rust_storm, true) == 15, "Rust Storm should tax a player bust")
+	_expect(EncounterEventsState.loss_tax_for(rust_storm, false) == 0, "Rust Storm should not tax a non-bust loss")
+	_expect(debt.get("id") == "DEALERS_DEBT", "Round eight should use Dealer's Debt")
+	_expect(EncounterEventsState.win_bonus_for(debt, true) == 20, "Dealer's Debt should pay twenty chips when the dealer busts")
+	_expect(EncounterEventsState.win_bonus_for(debt, false) == 0, "Dealer's Debt should not pay if the dealer does not bust")
 	var soft_seventeen := [{"rank": 1}, {"rank": 6}]
 	var hard_seventeen := [{"rank": 10}, {"rank": 7}]
 	_expect(Rules.is_soft(soft_seventeen), "Ace + 6 should be a soft 17")
