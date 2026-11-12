@@ -40,3 +40,9 @@
 - House Favor (every fourth round): adds 10 virtual chips to a push.
 - Blood Toll (every fifth round): removes 10 additional virtual chips after a loss.
 - Event cycle continues across completed-round saves.
+
+## Horror character presentation
+
+- The dealer is a darkened Quaternius humanoid model with red eye lights.
+- A Quaternius Zombie Basic model idles beside the table. During Restless Dealer rounds it switches to the Idle_Attack clip.
+- The zombie GLTF includes the atlas and 16 source animation clips; no separate external texture or animation files are required.

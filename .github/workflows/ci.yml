@@ -32,6 +32,9 @@ jobs:
           test -f scripts/encounter_events.gd
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb
+          test -f assets/enemies/quaternius_zombie_basic.gltf
+          test -f scripts/zombie_enemy.gd
+          test -f scenes/zombie_enemy.tscn
           test -f assets/licenses/QUATERNIUS-CC0-1.0.txt
           test -f export_presets.cfg
       - name: Import project

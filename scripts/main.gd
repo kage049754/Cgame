@@ -3,6 +3,7 @@ extends Node3D
 const Rules = preload("res://scripts/blackjack_rules.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
 const DealerCharacterScene = preload("res://scenes/dealer_character.tscn")
+const ZombieEnemyScene = preload("res://scenes/zombie_enemy.tscn")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
@@ -30,6 +31,7 @@ var restart_button: Button
 var survival := SurvivalRun.new()
 var items := SurvivalItemsState.new()
 var dealer_revealed := false
+var zombie_character: Node3D
 var house_bell_active := false
 var current_event: Dictionary = {}
 var hit_button: Button
@@ -136,6 +138,10 @@ func _build_table() -> void:
 	var dealer_character := DealerCharacterScene.instantiate()
 	dealer_character.position = Vector3(0, -0.75, -4.05)
 	add_child(dealer_character)
+	zombie_character = ZombieEnemyScene.instantiate() as Node3D
+	zombie_character.position = Vector3(-4.05, -0.75, -1.65)
+	zombie_character.scale = Vector3.ONE * 0.82
+	add_child(zombie_character)
 
 func _material(color: Color, roughness: float = 0.65) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
@@ -234,6 +240,8 @@ func _new_round() -> void:
 	dealer_revealed = false
 	house_bell_active = false
 	current_event = EncounterEventsState.event_for_round(round_number)
+	if zombie_character != null:
+		zombie_character.call("play_animation", "Idle_Attack" if bool(current_event.get("force_soft_17", false)) else "Idle")
 	current_bet = mini(BASE_BET, chips)
 	chips -= current_bet
 	player_hand.clear()
