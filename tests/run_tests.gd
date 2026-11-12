@@ -7,6 +7,7 @@ const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
+const ControllerInput = preload("res://scripts/controller_input.gd")
 
 var failures := 0
 
@@ -22,6 +23,7 @@ func _initialize() -> void:
 	_test_encounter_events()
 	_test_save_migration()
 	_test_persistent_progression()
+	_test_controller_input_mapping()
 	if failures > 0:
 		push_error("Survival 21 test suite failed with %d assertion(s)." % failures)
 		quit(1)
@@ -167,6 +169,16 @@ func _test_save_migration() -> void:
 	var upgraded := ConfigFile.new()
 	_expect(upgraded.load(path) == OK and int(upgraded.get_value("state", "save_version", 0)) == SaveSystem.SAVE_VERSION, "Migrated save should be persisted at the new version")
 	SaveSystem.delete_state(path)
+
+func _test_controller_input_mapping() -> void:
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_A) == "hit", "Gamepad A should hit")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_B) == "stand", "Gamepad B should stand")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_X) == "double", "Gamepad X should double")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_Y) == "next_hand", "Gamepad Y should start the next hand")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_LEFT_SHOULDER) == "marked_card", "Left shoulder should use Marked Card")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_RIGHT_SHOULDER) == "house_bell", "Right shoulder should use House Bell")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_START) == "restart", "Start should restart after a run ends")
+	_expect(ControllerInput.action_for_button(JOY_BUTTON_BACK) == "", "Unmapped gamepad buttons should be ignored")
 
 func _test_persistent_progression() -> void:
 	var path := "user://survival21_profile_test.cfg"

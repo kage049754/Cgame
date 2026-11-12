@@ -7,7 +7,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Procedural 3D blackjack table, 3D cards, and support pedestal.
 - Post-apocalyptic arena dressing using Quaternius street-intersection, streetlight, and shipping-container models, with warm point lights.
 - Blackjack rules with ace handling, natural blackjack priority, busts, and dealer resolution.
-- Hit, Stand, Double, and Next Hand actions, with H/S/D/N keyboard shortcuts and M/B for tactical items.
+- Hit, Stand, Double, and Next Hand actions, with keyboard shortcuts, gamepad mappings, and touchscreen buttons.
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
 - Survival run with three hearts, five wins to escape, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
@@ -44,10 +44,10 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Six encounter events with distinct payout, dealer, and bust modifiers.
 - [x] Quaternius dealer, zombie, and environment models; zombie animation playback.
 - [x] Procedural horror ambience and core sound effects.
-- [x] Keyboard controls and audio volume settings (settings tests pending).
+- [x] Keyboard, gamepad, and touchscreen controls; focus order and Escape dismissal.\n- [x] Audio volume settings and persistence.
 - [ ] More varied encounter events and enemy behaviors.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
-- [ ] Android and desktop input adaptation, performance, and accessibility.
+- [ ] UI scaling across device aspect ratios, TalkBack/device accessibility checks, and performance profiling.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.
 
 ## Running locally

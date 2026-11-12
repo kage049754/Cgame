@@ -13,6 +13,7 @@ const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const AudioSystemScript = preload("res://scripts/procedural_audio.gd")
 const SettingsStore = preload("res://scripts/settings_store.gd")
+const ControllerInput = preload("res://scripts/controller_input.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
@@ -130,6 +131,30 @@ func _on_effects_volume_changed(value: float) -> void:
 		audio_system.call("set_effects_volume", value / 100.0)
 	_save_settings()
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not event is InputEventJoypadButton or not event.pressed:
+		return
+	var action := ControllerInput.action_for_button(event.button_index)
+	match action:
+		"hit":
+			_on_hit()
+		"stand":
+			_on_stand()
+		"double":
+			_on_double()
+		"next_hand":
+			_on_next_hand()
+		"marked_card":
+			_on_marked_card()
+		"house_bell":
+			_on_house_bell()
+		"restart":
+			if restart_button.visible:
+				_on_restart()
+		_:
+			return
+	get_viewport().set_input_as_handled()
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
@@ -149,6 +174,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_R:
 			if restart_button.visible:
 				_on_restart()
+		KEY_ESCAPE:
+			if settings_panel.visible:
+				_toggle_settings()
+			elif archive_dialog.visible:
+				archive_dialog.hide()
 	get_viewport().set_input_as_handled()
 
 func _build_table() -> void:
@@ -352,9 +382,10 @@ func _build_ui() -> void:
 	settings_column.add_child(close_settings)
 
 	var hint := Label.new()
-	hint.text = "Beat the dealer. H Hit | S Stand | D Double | N Next | M Mark | B Bell"
+	hint.text = "H Hit | S Stand | D Double | N Next | M Mark | B Bell  •  Pad: A/B/X/Y, LB/RB, Start"
 	hint.add_theme_color_override("font_color", Color(0.72, 0.78, 0.75))
 	column.add_child(hint)
+	hit_button.grab_focus()
 
 func _make_button(caption: String, callback: Callable) -> Button:
 	var button := Button.new()

@@ -84,3 +84,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Rust Storm (every seventh round): a player bust costs 15 additional virtual chips.
 - Dealer's Debt (every eighth round): beating a dealer who busts grants 20 extra virtual chips.
 - Existing event priority is preserved when round intervals overlap.
+
+## Gamepad and mobile input
+
+- Touchscreen users can activate the large on-screen action buttons.
+- Gamepad: A Hit, B Stand, X Double, Y Next Hand, Left Shoulder Marked Card, Right Shoulder House Bell, Start Restart after a run ends.
+- Keyboard: H/S/D/N for core actions, M/B for tactical items, R for restart, and Escape to close an open settings or archive panel.
+- The HIT button receives initial keyboard/controller focus; controls retain visible labels and tooltips.
