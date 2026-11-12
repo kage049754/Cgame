@@ -674,6 +674,7 @@ func _on_restart() -> void:
 	survival.reset()
 	items.reset()
 	run_starting_tier = selected_starting_tier
+	_refresh_dealer_appearance()
 	chips = STARTING_CHIPS
 	current_bet = BASE_BET
 	round_number = 0
