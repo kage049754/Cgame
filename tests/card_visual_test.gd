@@ -5,6 +5,10 @@ func _initialize() -> void:
 	root.add_child(scene)
 	for frame in range(3):
 		await process_frame
+	scene.set("round_active", true)
+	scene.set("dealer_revealed", false)
+	scene.call("_render_cards")
+	await process_frame
 	var cards_root := scene.get("cards_root") as Node3D
 	var player_hand: Array = scene.get("player_hand")
 	var dealer_hand: Array = scene.get("dealer_hand")
@@ -20,11 +24,13 @@ func _initialize() -> void:
 	var hidden_back := false
 	for card_node in cards_root.get_children():
 		var labels := card_node.find_children("*", "Label3D", true, false)
-		if labels.size() >= 3:
-			face_cards += 1
+		var is_back := false
 		for label_node in labels:
 			if (label_node as Label3D).text == "SURVIVAL 21":
 				hidden_back = true
+				is_back = true
+		if labels.size() >= 3 and not is_back:
+			face_cards += 1
 	if face_cards < 3:
 		push_error("Face-up cards should show corner indices and a central suit.")
 		quit(1)
