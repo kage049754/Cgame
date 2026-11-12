@@ -3,7 +3,7 @@ extends SceneTree
 var failures := 0
 
 func _initialize() -> void:
-	var scene := load("res://scenes/main.tscn").instantiate()
+	var scene: Node = load("res://scenes/main.tscn").instantiate()
 	root.add_child(scene)
 	for frame in range(3):
 		await process_frame
