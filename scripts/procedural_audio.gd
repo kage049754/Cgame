@@ -74,6 +74,19 @@ func _make_effect(duration: float, start_frequency: float, end_frequency: float,
 	stream.data = bytes
 	return stream
 
+func set_ambience_volume(value: float) -> void:
+	if ambience_player != null:
+		ambience_player.volume_db = _volume_to_db(value)
+
+func set_effects_volume(value: float) -> void:
+	if effects_player != null:
+		effects_player.volume_db = _volume_to_db(value)
+
+func _volume_to_db(value: float) -> float:
+	if value <= 0.0:
+		return -80.0
+	return linear_to_db(clampf(value, 0.0, 1.0))
+
 func play_card() -> void:
 	_play(card_stream)
 

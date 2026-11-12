@@ -12,6 +12,7 @@ const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const AudioSystemScript = preload("res://scripts/procedural_audio.gd")
+const SettingsStore = preload("res://scripts/settings_store.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -38,6 +39,10 @@ var items := SurvivalItemsState.new()
 var dealer_revealed := false
 var zombie_character: Node3D
 var audio_system: Node
+var settings_button: Button
+var settings_panel: PanelContainer
+var ambience_slider: HSlider
+var effects_slider: HSlider
 var house_bell_active := false
 var current_event: Dictionary = {}
 var hit_button: Button
@@ -51,6 +56,7 @@ func _ready() -> void:
 	_build_ui()
 	audio_system = AudioSystemScript.new()
 	add_child(audio_system)
+	_load_settings()
 	var restored := _restore_run()
 	if restored and (survival.finished or chips <= 0):
 		status_label.text = "Saved run ended. Restart to play again."
@@ -92,6 +98,32 @@ func _restore_run() -> bool:
 	items.marked_cards = clampi(int(state.get("marked_cards", 1)), 0, SurvivalItemsState.STARTING_MARKED_CARDS)
 	items.house_bells = clampi(int(state.get("house_bells", 1)), 0, SurvivalItemsState.STARTING_HOUSE_BELLS)
 	return true
+
+func _toggle_settings() -> void:
+	settings_panel.visible = not settings_panel.visible
+
+func _load_settings() -> void:
+	var settings := SettingsStore.load_settings()
+	ambience_slider.value = float(settings.get("ambience_percent", 4.0))
+	effects_slider.value = float(settings.get("effects_percent", 35.0))
+	_on_ambience_volume_changed(ambience_slider.value)
+	_on_effects_volume_changed(effects_slider.value)
+
+func _save_settings() -> void:
+	SettingsStore.save_settings({
+		"ambience_percent": ambience_slider.value,
+		"effects_percent": effects_slider.value
+	})
+
+func _on_ambience_volume_changed(value: float) -> void:
+	if audio_system != null:
+		audio_system.call("set_ambience_volume", value / 100.0)
+	_save_settings()
+
+func _on_effects_volume_changed(value: float) -> void:
+	if audio_system != null:
+		audio_system.call("set_effects_volume", value / 100.0)
+	_save_settings()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
@@ -220,7 +252,7 @@ func _build_ui() -> void:
 	add_child(layer)
 	var panel := PanelContainer.new()
 	panel.position = Vector2(22, 18)
-	panel.size = Vector2(460, 420)
+	panel.size = Vector2(460, 470)
 	layer.add_child(panel)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 9)
@@ -264,10 +296,48 @@ func _build_ui() -> void:
 	item_actions.add_child(marked_button)
 	bell_button = _make_button("BELL (1)", _on_house_bell)
 	item_actions.add_child(bell_button)
+	settings_button = _make_button("SETTINGS", _toggle_settings)
+	column.add_child(settings_button)
 	restart_button = _make_button("RESTART RUN", _on_restart)
 	restart_button.custom_minimum_size = Vector2(150, 42)
 	restart_button.visible = false
 	column.add_child(restart_button)
+
+	settings_panel = PanelContainer.new()
+	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
+	settings_panel.offset_left = -150
+	settings_panel.offset_right = 150
+	settings_panel.offset_top = -115
+	settings_panel.offset_bottom = 115
+	settings_panel.visible = false
+	ui.add_child(settings_panel)
+	var settings_column := VBoxContainer.new()
+	settings_panel.add_child(settings_column)
+	var settings_title := Label.new()
+	settings_title.text = "AUDIO SETTINGS"
+	settings_column.add_child(settings_title)
+	var ambience_label := Label.new()
+	ambience_label.text = "AMBIENCE VOLUME"
+	settings_column.add_child(ambience_label)
+	ambience_slider = HSlider.new()
+	ambience_slider.min_value = 0
+	ambience_slider.max_value = 100
+	ambience_slider.step = 1
+	ambience_slider.custom_minimum_size = Vector2(260, 32)
+	ambience_slider.value_changed.connect(_on_ambience_volume_changed)
+	settings_column.add_child(ambience_slider)
+	var effects_label := Label.new()
+	effects_label.text = "SOUND EFFECT VOLUME"
+	settings_column.add_child(effects_label)
+	effects_slider = HSlider.new()
+	effects_slider.min_value = 0
+	effects_slider.max_value = 100
+	effects_slider.step = 1
+	effects_slider.custom_minimum_size = Vector2(260, 32)
+	effects_slider.value_changed.connect(_on_effects_volume_changed)
+	settings_column.add_child(effects_slider)
+	var close_settings := _make_button("CLOSE", _toggle_settings)
+	settings_column.add_child(close_settings)
 
 	var hint := Label.new()
 	hint.text = "Beat the dealer. H Hit | S Stand | D Double | N Next | M Mark | B Bell"

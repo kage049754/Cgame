@@ -4,32 +4,30 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Current implementation
 
-- Procedural 3D blackjack table, 3D cards, and a support pedestal.
+- Procedural 3D blackjack table, 3D cards, and support pedestal.
 - Post-apocalyptic arena dressing using Quaternius street-intersection, streetlight, and shipping-container models, with warm point lights.
 - Blackjack rules with ace handling, natural blackjack priority, busts, and dealer resolution.
-- Hit, Stand, Double, and Next Hand actions, with keyboard shortcuts H/S/D/N and M/B for the two tactical items.
+- Hit, Stand, Double, and Next Hand actions, with H/S/D/N keyboard shortcuts and M/B for tactical items.
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
 - Survival run with three hearts, five wins to escape, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
 - Encounter events: Restless Dealer forces soft-17 draws, House Favor adds chips on a push, and Blood Toll deducts extra chips after a loss.
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
-- Quaternius Superhero Male as a dark dealer silhouette with red-eye treatment.
-- Quaternius Zombie Basic as an animated threat, with Idle and Idle_Attack playback verified in CI.
-- CC0 license notices and source provenance for all imported Quaternius models.
-- Automated blackjack, survival, opponent AI, item, encounter-event, save/load, and zombie animation tests.
+- Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic as an animated threat with Idle and Idle_Attack playback.
+- Original procedural horror ambience and synthesized card, win, loss, and item sound effects.
+- In-game audio settings with saved ambience and effects volume sliders.
+- Automated blackjack, survival, opponent AI, item, event, save/load, animation, audio, and settings tests.
 
 ## Verification status
 
-- **Gameplay, item, save/load, and encounter-event tests:** passed in run #28.
-- **Zombie Basic scene import and main-scene smoke test:** passed in run #29.
-- **Zombie Idle and Idle_Attack animation playback:** passed in run #30.
-- **Android arm64 APK export:** passed in run #29 for commit `493bd5f`; APK integrity, package identifier, and arm64 libraries verified. The APK from that run does not yet include the environment prop additions below.
-- **Latest environment props:** added after run #29; awaiting the next scene import and Android build.
-- **Desktop keyboard input:** added; CI compile/smoke verification pending.
+- **Gameplay, event, zombie animation, and procedural audio tests:** passed in run #32.
+- **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
+- **Android arm64 APK:** environment build passed in run #31; audio and settings changes are being built in newer runs.
+- **Audio settings persistence:** added in the latest commit; pending CI verification.
 - **Emulator/physical-device testing:** not yet performed.
 
-[Run #29 Android APK](https://github.com/kage049754/Cgame/actions/runs/43213052304)
+[Run #31 Android environment build](https://github.com/kage049754/Cgame/actions/runs/43213885678)
 
 ## Roadmap
 
@@ -40,24 +38,27 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Completed-round save/load and run restart.
 - [x] Initial encounter events.
 - [x] Quaternius dealer, zombie, and environment models; zombie animation playback.
+- [x] Procedural horror ambience and core sound effects.
+- [x] Keyboard controls and audio volume settings (settings tests pending).
 - [ ] More varied encounter events and enemy behaviors.
-- [ ] Audio, music, ambient effects, and polished animations.
-- [ ] Progression, unlockables, settings, and save migration.
+- [ ] Progression, unlockables, and save migration.
 - [ ] Android and desktop input adaptation, performance, and accessibility.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.
 
 ## Running locally
 
-Install Godot 4.4.1, import `project.godot`, then run the main scene. To run automated tests:
+Install Godot 4.4.1, import `project.godot`, then run the main scene. Automated checks:
 
 ```sh
 godot --headless --path . --script res://tests/run_tests.gd
 godot --headless --path . --script res://tests/zombie_animation_test.gd
+godot --headless --path . --script res://tests/audio_generation_test.gd
+godot --headless --path . --script res://tests/settings_test.gd
 ```
 
 ## Android build
 
-GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. It enables ETC2/ASTC texture import and exports an arm64 debug APK. The workflow verifies ZIP integrity, package metadata, and native libraries before uploading the artifact.
+GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK, then checks ZIP integrity, package metadata, and native libraries before uploading the artifact.
 
 ## License and assets
 

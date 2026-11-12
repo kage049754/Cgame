@@ -64,3 +64,9 @@
 - R: Restart after a run ends or chips are depleted
 
 All game buttons are keyboard-focusable and expose tooltips.
+
+## Audio settings
+
+- Ambience volume and sound-effect volume have separate sliders.
+- Slider values persist in `user://settings.cfg`.
+- Both streams use original synthesized sounds and can be muted independently.
