@@ -212,7 +212,7 @@ func _on_hit() -> void:
 func _on_stand() -> void:
 	if not round_active:
 		return
-	while not house_bell_active and Opponents.should_dealer_hit(dealer_hand, survival.wins):
+	while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active):
 		_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
@@ -225,7 +225,7 @@ func _on_double() -> void:
 	current_bet *= 2
 	_draw_card(player_hand)
 	if not Rules.is_bust(player_hand):
-		while Rules.hand_value(dealer_hand) < 17:
+		while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active):
 			_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()

@@ -25,7 +25,9 @@ static func profile_for_wins(wins: int) -> Dictionary:
 		"hit_soft_17": false
 	}
 
-static func should_dealer_hit(cards: Array, wins: int) -> bool:
+static func should_dealer_hit(cards: Array, wins: int, house_bell_active: bool = false) -> bool:
+	if house_bell_active:
+		return false
 	var profile := profile_for_wins(wins)
 	var value := BlackjackRules.hand_value(cards)
 	var stand_at := int(profile.get("stand_at", 17))

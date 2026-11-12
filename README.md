@@ -10,15 +10,16 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
 - Survival run with three hearts, five wins to escape, loss tracking, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
-- Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell forces the dealer to stand for one hand.
+- Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
 - Quaternius Superhero Male humanoid model integrated as a dark dealer silhouette with red-eye treatment. Original CC0 license notice and provenance are included.
-- Automated blackjack, survival progression, soft-hand, opponent AI, and item-use tests.
+- Automated blackjack, survival progression, soft-hand, opponent AI, and tactical-item tests.
 - Godot 4.4.1 headless scene smoke test.
 
 ## Verification status
 
-- **Core gameplay and scene tests:** passed in run #20, including the imported Quaternius model and opponent AI/item tests present at that commit.
-- **Android APK export:** still being debugged. Earlier logs identified missing templates and utilities; the current workflow adds explicit SDK, template, keystore, and verbose export diagnostics.
+- **Core blackjack, opponent AI, and Quaternius model import:** passed in run #20. That run predates the tactical-item implementation.
+- **Tactical item integration and House Bell interaction:** committed after run #20; awaiting run #23 verification.
+- **Android APK export:** still being debugged. The workflow now installs matching templates, configures Android SDK/JDK paths and a temporary debug keystore, and prints verbose export diagnostics.
 - **APK integrity, package metadata, and arm64 library inspection:** not yet passed.
 - **Emulator/physical-device testing:** not yet performed.
 

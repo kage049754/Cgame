@@ -49,6 +49,7 @@ func _test_soft_hands_and_opponent_profiles() -> void:
 	_expect(Opponents.should_dealer_hit(soft_seventeen, 2), "Collector should hit soft 17")
 	_expect(Opponents.should_dealer_hit(hard_seventeen, 4), "The House should draw on hard 17 and stand at 18")
 	_expect(not Opponents.should_dealer_hit(hard_seventeen, 0), "Night Dealer should stand on hard 17")
+	_expect(not Opponents.should_dealer_hit(soft_seventeen, 2, true), "House Bell should stop the dealer even when the Collector would hit soft 17")
 	_expect(Opponents.profile_for_wins(0).get("name") == "THE NIGHT DEALER", "First opponent profile should be Night Dealer")
 	_expect(Opponents.profile_for_wins(2).get("name") == "THE COLLECTOR", "Second opponent profile should be Collector")
 	_expect(Opponents.profile_for_wins(4).get("name") == "THE HOUSE", "Final opponent profile should be The House")
