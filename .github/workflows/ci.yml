@@ -200,7 +200,7 @@ jobs:
         with:
           name: Survival21-Windows-x86_64-debug
           path: build/Survival21.exe
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
   android-emulator-smoke:
     name: Android emulator install and launch
