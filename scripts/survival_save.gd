@@ -2,7 +2,7 @@ class_name SurvivalSave
 extends RefCounted
 
 const SAVE_PATH := "user://survival21.cfg"
-const SAVE_VERSION := 2
+const SAVE_VERSION := 3
 
 static func save_state(state: Dictionary, path: String = SAVE_PATH) -> bool:
 	var config := ConfigFile.new()
@@ -19,11 +19,16 @@ static func load_state(path: String = SAVE_PATH) -> Dictionary:
 		state[key] = config.get_value("state", key)
 	var stored_version := int(state.get("save_version", 0))
 	if stored_version == 1:
-		state["save_version"] = SAVE_VERSION
 		state["round_number"] = maxi(0, int(state.get("round_number", 0)))
 		state["marked_cards"] = clampi(int(state.get("marked_cards", 1)), 0, 1)
 		state["house_bells"] = clampi(int(state.get("house_bells", 1)), 0, 1)
 		state["ending"] = str(state.get("ending", ""))
+		state["starting_opponent_tier"] = 0
+		state["save_version"] = SAVE_VERSION
+		save_state(state, path)
+	elif stored_version == 2:
+		state["starting_opponent_tier"] = clampi(int(state.get("starting_opponent_tier", 0)), 0, 2)
+		state["save_version"] = SAVE_VERSION
 		save_state(state, path)
 	elif stored_version != SAVE_VERSION:
 		return {}

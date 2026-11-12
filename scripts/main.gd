@@ -47,6 +47,10 @@ var settings_panel: PanelContainer
 var root_ui_panel: PanelContainer
 var ui_scale_slider: HSlider
 var high_contrast_toggle: CheckButton
+var starting_opponent_selector: OptionButton
+var starting_opponent_label: Label
+var selected_starting_tier := 0
+var run_starting_tier := 0
 var ui_layer: CanvasLayer
 var ui_scale_factor := 1.0
 var high_contrast_enabled := false
@@ -70,6 +74,7 @@ func _ready() -> void:
 	audio_system = AudioSystemScript.new()
 	add_child(audio_system)
 	_load_settings()
+	run_starting_tier = selected_starting_tier
 	var restored := _restore_run()
 	if restored and (survival.finished or chips <= 0):
 		status_label.text = "Saved run ended. Restart to play again."
@@ -91,7 +96,8 @@ func _save_run() -> void:
 		"finished": survival.finished,
 		"ending": survival.ending,
 		"marked_cards": items.marked_cards,
-		"house_bells": items.house_bells
+		"house_bells": items.house_bells,
+		"starting_opponent_tier": run_starting_tier
 	}
 	SaveSystem.save_state(state)
 
@@ -110,6 +116,7 @@ func _restore_run() -> bool:
 	survival.ending = str(state.get("ending", ""))
 	items.marked_cards = clampi(int(state.get("marked_cards", 1)), 0, SurvivalItemsState.STARTING_MARKED_CARDS)
 	items.house_bells = clampi(int(state.get("house_bells", 1)), 0, SurvivalItemsState.STARTING_HOUSE_BELLS)
+	run_starting_tier = Opponents.highest_unlocked_tier(int(state.get("starting_opponent_tier", selected_starting_tier)), progression.unlocked)
 	return true
 
 func _toggle_settings() -> void:
@@ -125,6 +132,9 @@ func _load_settings() -> void:
 	effects_slider.value = float(settings.get("effects_percent", 35.0))
 	ui_scale_slider.value = clampf(float(settings.get("ui_scale", 1.0)), 0.8, 1.3)
 	high_contrast_toggle.button_pressed = bool(settings.get("high_contrast", false))
+	selected_starting_tier = Opponents.highest_unlocked_tier(int(settings.get("starting_opponent_tier", 0)), progression.unlocked)
+	starting_opponent_selector.select(selected_starting_tier)
+	_refresh_opponent_choices()
 	_on_ambience_volume_changed(ambience_slider.value)
 	_on_effects_volume_changed(effects_slider.value)
 	_apply_ui_scale(ui_scale_slider.value)
@@ -135,8 +145,30 @@ func _save_settings() -> void:
 		"ambience_percent": ambience_slider.value,
 		"effects_percent": effects_slider.value,
 		"ui_scale": ui_scale_slider.value,
-		"high_contrast": high_contrast_toggle.button_pressed
+		"high_contrast": high_contrast_toggle.button_pressed,
+		"starting_opponent_tier": selected_starting_tier
 	})
+
+func _refresh_opponent_choices() -> void:
+	if starting_opponent_selector == null:
+		return
+	starting_opponent_selector.set_item_disabled(1, not progression.unlocked.has("COLLECTOR"))
+	starting_opponent_selector.set_item_disabled(2, not progression.unlocked.has("HOUSE"))
+	var resolved := Opponents.highest_unlocked_tier(selected_starting_tier, progression.unlocked)
+	if resolved != selected_starting_tier:
+		selected_starting_tier = resolved
+		starting_opponent_selector.select(selected_starting_tier)
+
+func _on_starting_opponent_selected(index: int) -> void:
+	selected_starting_tier = Opponents.highest_unlocked_tier(index, progression.unlocked)
+	starting_opponent_selector.select(selected_starting_tier)
+	_save_settings()
+	var profile := Opponents.profile_for_tier(selected_starting_tier)
+	status_label.text = "%s will start your next run." % profile.get("name", "THE NIGHT DEALER")
+	_update_ui()
+
+func _current_opponent_profile() -> Dictionary:
+	return Opponents.profile_for_wins(survival.wins, run_starting_tier)
 
 func _on_ui_scale_changed(value: float) -> void:
 	_apply_ui_scale(value)
@@ -433,8 +465,8 @@ func _build_ui() -> void:
 	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
 	settings_panel.offset_left = -150
 	settings_panel.offset_right = 150
-	settings_panel.offset_top = -205
-	settings_panel.offset_bottom = 205
+	settings_panel.offset_top = -250
+	settings_panel.offset_bottom = 250
 	settings_panel.visible = false
 	ui_layer.add_child(settings_panel)
 	var settings_column := VBoxContainer.new()
@@ -445,6 +477,22 @@ func _build_ui() -> void:
 	settings_title.accessibility_name = "Settings"
 	settings_title.accessibility_description = "Audio, display scale, and contrast options."
 	settings_column.add_child(settings_title)
+	starting_opponent_label = Label.new()
+	starting_opponent_label.name = "StartingOpponentLabel"
+	starting_opponent_label.text = "STARTING HOUSE (NEXT RUN)"
+	starting_opponent_label.accessibility_name = "Starting house"
+	starting_opponent_label.accessibility_description = "Choose which unlocked dealer starts the next survival run."
+	settings_column.add_child(starting_opponent_label)
+	starting_opponent_selector = OptionButton.new()
+	starting_opponent_selector.name = "StartingOpponentSelector"
+	starting_opponent_selector.custom_minimum_size = Vector2(260, 36)
+	starting_opponent_selector.add_item("Night Dealer", 0)
+	starting_opponent_selector.add_item("Collector", 1)
+	starting_opponent_selector.add_item("The House", 2)
+	starting_opponent_selector.accessibility_name = "Starting opponent"
+	starting_opponent_selector.accessibility_description = "Choose an unlocked opponent for your next run. Collector and The House unlock after defeating them."
+	starting_opponent_selector.item_selected.connect(_on_starting_opponent_selected)
+	settings_column.add_child(starting_opponent_selector)
 	var ambience_label := Label.new()
 	ambience_label.name = "AmbienceLabel"
 	ambience_label.text = "AMBIENCE VOLUME"
@@ -509,9 +557,10 @@ func _build_ui() -> void:
 		event_label, survival_label, hit_button, stand_button, double_button, deal_button,
 		medkit_button, marked_button, bell_button, settings_button, archive_button, restart_button
 	])
-	_link_focus_order([ambience_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
+	_link_focus_order([starting_opponent_selector, ambience_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
 	_link_accessibility_flow([
-		settings_title, ambience_label, ambience_slider, effects_label, effects_slider,
+		settings_title, starting_opponent_label, starting_opponent_selector,
+		ambience_label, ambience_slider, effects_label, effects_slider,
 		scale_label, ui_scale_slider, high_contrast_toggle, close_settings
 	])
 	hit_button.grab_focus()
@@ -617,6 +666,7 @@ func _on_restart() -> void:
 	SaveSystem.delete_state()
 	survival.reset()
 	items.reset()
+	run_starting_tier = selected_starting_tier
 	chips = STARTING_CHIPS
 	current_bet = BASE_BET
 	round_number = 0
@@ -640,7 +690,7 @@ func _on_hit() -> void:
 func _on_stand() -> void:
 	if not round_active:
 		return
-	while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active, bool(current_event.get("force_soft_17", false))):
+	while Opponents.should_dealer_hit(dealer_hand, survival.wins, house_bell_active, bool(current_event.get("force_soft_17", false)), run_starting_tier):
 		_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
@@ -695,7 +745,7 @@ func _finish_round() -> void:
 	if not round_active:
 		return
 	round_active = false
-	var opponent_name := str(Opponents.profile_for_wins(survival.wins).get("name", "UNKNOWN"))
+	var opponent_name := str(_current_opponent_profile().get("name", "UNKNOWN"))
 	var result := Rules.outcome(player_hand, dealer_hand)
 	survival.resolve_hand(result)
 	if zombie_character != null:
@@ -726,6 +776,7 @@ func _finish_round() -> void:
 		status_label.text = "YOUR LAST HEART FADES. THE HOUSE WINS."
 	progression.record_hand(result, opponent_name, survival.ending)
 	progression.save_profile()
+	_refresh_opponent_choices()
 	_update_ui()
 	_save_run()
 
@@ -779,7 +830,7 @@ func _update_ui() -> void:
 	dealer_label.text = "DEALER  %s  |  %d cards" % [dealer_value, dealer_hand.size()]
 	player_label.text = "YOU  %d  |  %d cards  |  Bet: %d" % [Rules.hand_value(player_hand), player_hand.size(), current_bet]
 	chips_label.text = "CHIPS  %d" % chips
-	var opponent_profile := Opponents.profile_for_wins(survival.wins)
+	var opponent_profile := _current_opponent_profile()
 	opponent_label.text = "OPPONENT  %s — %s" % [opponent_profile.get("name", "UNKNOWN"), opponent_profile.get("tell", "")]
 	event_label.text = "EVENT  %s — %s" % [current_event.get("name", "QUIET TABLE"), current_event.get("description", "")]
 	survival_label.text = "HEARTS  %s   |   WINS  %d / %d   |   LOSSES  %d" % ["♥".repeat(survival.health) + "♡".repeat(SurvivalRun.MAX_HEALTH - survival.health), survival.wins, SurvivalRun.REQUIRED_WINS, survival.losses]

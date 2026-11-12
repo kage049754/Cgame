@@ -122,3 +122,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Engine upgraded to Godot 4.7.2, which includes AccessKit integration.
 - Accessible names, descriptions, focus order, and live announcements are being added to the gameplay controls and status labels.
 - Screen-reader behavior still requires validation with TalkBack on Android and NVDA on Windows; CI cannot substitute for those interactive assistive-technology tests.
+
+## Selectable starting opponents
+
+- The Settings panel lets players choose Night Dealer, Collector, or The House as the starting opponent for the next run.
+- Collector unlocks after defeating the Collector; The House unlocks after defeating The House.
+- A selected Collector run escalates to The House after two wins. A selected House run begins at The House.
+- The current run keeps its chosen starting opponent even if the next-run setting is changed. The selection is stored in the run save and migrated from save versions 1 and 2.
