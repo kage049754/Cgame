@@ -43,6 +43,12 @@ var zombie_character: Node3D
 var audio_system: Node
 var settings_button: Button
 var settings_panel: PanelContainer
+var root_ui_panel: PanelContainer
+var ui_scale_slider: HSlider
+var high_contrast_toggle: CheckButton
+var ui_layer: CanvasLayer
+var ui_scale_factor := 1.0
+var high_contrast_enabled := false
 var archive_button: Button
 var archive_dialog: AcceptDialog
 var progression := ProgressionState.new()
@@ -112,14 +118,55 @@ func _load_settings() -> void:
 	var settings := SettingsStore.load_settings()
 	ambience_slider.value = float(settings.get("ambience_percent", 4.0))
 	effects_slider.value = float(settings.get("effects_percent", 35.0))
+	ui_scale_slider.value = clampf(float(settings.get("ui_scale", 1.0)), 0.8, 1.3)
+	high_contrast_toggle.button_pressed = bool(settings.get("high_contrast", false))
 	_on_ambience_volume_changed(ambience_slider.value)
 	_on_effects_volume_changed(effects_slider.value)
+	_apply_ui_scale(ui_scale_slider.value)
+	_apply_high_contrast(high_contrast_toggle.button_pressed)
 
 func _save_settings() -> void:
 	SettingsStore.save_settings({
 		"ambience_percent": ambience_slider.value,
-		"effects_percent": effects_slider.value
+		"effects_percent": effects_slider.value,
+		"ui_scale": ui_scale_slider.value,
+		"high_contrast": high_contrast_toggle.button_pressed
 	})
+
+func _on_ui_scale_changed(value: float) -> void:
+	_apply_ui_scale(value)
+	_save_settings()
+
+func _apply_ui_scale(value: float) -> void:
+	ui_scale_factor = clampf(value, 0.8, 1.3)
+	var scale_vector := Vector2.ONE * ui_scale_factor
+	if root_ui_panel != null:
+		root_ui_panel.scale = scale_vector
+		root_ui_panel.pivot_offset = Vector2.ZERO
+	if settings_panel != null:
+		settings_panel.scale = scale_vector
+		settings_panel.pivot_offset = settings_panel.size / 2.0
+	if archive_dialog != null:
+		archive_dialog.scale = scale_vector
+		archive_dialog.pivot_offset = archive_dialog.size / 2.0
+
+func _on_high_contrast_toggled(enabled: bool) -> void:
+	_apply_high_contrast(enabled)
+	_save_settings()
+
+func _apply_high_contrast(enabled: bool) -> void:
+	high_contrast_enabled = enabled
+	if ui_layer == null:
+		return
+	var accessibility_theme := Theme.new()
+	var foreground := Color(1.0, 1.0, 1.0) if enabled else Color(0.88, 0.91, 0.89)
+	var button_foreground := Color(1.0, 1.0, 1.0) if enabled else Color(0.9, 0.93, 0.91)
+	accessibility_theme.set_color("font_color", "Label", foreground)
+	accessibility_theme.set_color("font_color", "Button", button_foreground)
+	accessibility_theme.set_color("font_hover_color", "Button", Color(1.0, 0.88, 0.55))
+	accessibility_theme.set_color("font_pressed_color", "Button", Color(1.0, 1.0, 1.0))
+	accessibility_theme.set_color("font_focus_color", "Button", Color(1.0, 0.88, 0.25))
+	ui_layer.theme = accessibility_theme
 
 func _on_ambience_volume_changed(value: float) -> void:
 	if audio_system != null:
@@ -283,12 +330,13 @@ func _material(color: Color, roughness: float = 0.65) -> StandardMaterial3D:
 	return mat
 
 func _build_ui() -> void:
-	var layer := CanvasLayer.new()
-	add_child(layer)
+	ui_layer = CanvasLayer.new()
+	add_child(ui_layer)
 	var panel := PanelContainer.new()
+	root_ui_panel = panel
 	panel.position = Vector2(22, 18)
 	panel.size = Vector2(460, 470)
-	layer.add_child(panel)
+	ui_layer.add_child(panel)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 9)
 	panel.add_child(column)
@@ -339,7 +387,7 @@ func _build_ui() -> void:
 	archive_dialog.title = "SURVIVAL ARCHIVE"
 	archive_dialog.dialog_text = ""
 	archive_dialog.min_size = Vector2i(520, 420)
-	layer.add_child(archive_dialog)
+	ui_layer.add_child(archive_dialog)
 	restart_button = _make_button("RESTART RUN", _on_restart)
 	restart_button.custom_minimum_size = Vector2(150, 42)
 	restart_button.visible = false
@@ -349,10 +397,10 @@ func _build_ui() -> void:
 	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
 	settings_panel.offset_left = -150
 	settings_panel.offset_right = 150
-	settings_panel.offset_top = -115
-	settings_panel.offset_bottom = 115
+	settings_panel.offset_top = -205
+	settings_panel.offset_bottom = 205
 	settings_panel.visible = false
-	layer.add_child(settings_panel)
+	ui_layer.add_child(settings_panel)
 	var settings_column := VBoxContainer.new()
 	settings_panel.add_child(settings_column)
 	var settings_title := Label.new()
@@ -378,6 +426,20 @@ func _build_ui() -> void:
 	effects_slider.custom_minimum_size = Vector2(260, 32)
 	effects_slider.value_changed.connect(_on_effects_volume_changed)
 	settings_column.add_child(effects_slider)
+	var scale_label := Label.new()
+	scale_label.text = "UI SCALE"
+	settings_column.add_child(scale_label)
+	ui_scale_slider = HSlider.new()
+	ui_scale_slider.min_value = 0.8
+	ui_scale_slider.max_value = 1.3
+	ui_scale_slider.step = 0.05
+	ui_scale_slider.custom_minimum_size = Vector2(260, 32)
+	ui_scale_slider.value_changed.connect(_on_ui_scale_changed)
+	settings_column.add_child(ui_scale_slider)
+	high_contrast_toggle = CheckButton.new()
+	high_contrast_toggle.text = "HIGH CONTRAST"
+	high_contrast_toggle.toggled.connect(_on_high_contrast_toggled)
+	settings_column.add_child(high_contrast_toggle)
 	var close_settings := _make_button("CLOSE", _toggle_settings)
 	settings_column.add_child(close_settings)
 

@@ -91,3 +91,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Gamepad: A Hit, B Stand, X Double, Y Next Hand, Left Shoulder Marked Card, Right Shoulder House Bell, Start Restart after a run ends.
 - Keyboard: H/S/D/N for core actions, M/B for tactical items, R for restart, and Escape to close an open settings or archive panel.
 - The HIT button receives initial keyboard/controller focus; controls retain visible labels and tooltips.
+
+## Accessibility options
+
+- Settings include an adjustable UI scale (80%–130%) and high-contrast text colors.
+- All primary actions remain labeled, keyboard-focusable, and have tooltips.
+- Escape closes the settings or archive dialog.
+- UI scale and contrast preferences persist independently from run progress.
