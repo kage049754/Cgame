@@ -153,7 +153,7 @@ func _draw_card(hand: Array[Dictionary]) -> void:
 		_create_deck()
 	hand.append(deck.pop_back())
 
-	func _new_round() -> void:
+func _new_round() -> void:
 	if survival.finished:
 		status_label.text = "The run has ended. Restart to enter the table again."
 		_update_ui()
