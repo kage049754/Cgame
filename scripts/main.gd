@@ -844,6 +844,7 @@ func _render_cards() -> void:
 
 func _add_hand_visuals(hand: Array[Dictionary], origin: Vector3, hide_second: bool) -> void:
 	for index in range(hand.size()):
+		var is_hidden := hide_second and index == 1
 		var card_node := Node3D.new()
 		card_node.position = origin + Vector3(index * 0.85, index * 0.012, 0)
 		cards_root.add_child(card_node)
@@ -851,17 +852,48 @@ func _add_hand_visuals(hand: Array[Dictionary], origin: Vector3, hide_second: bo
 		var box := BoxMesh.new()
 		box.size = Vector3(0.72, 0.055, 1.02)
 		card_mesh.mesh = box
-		card_mesh.material_override = _material(Color(0.08, 0.16, 0.2) if hide_second and index == 1 else Color(0.92, 0.91, 0.84), 0.35)
+		card_mesh.material_override = _material(Color(0.035, 0.075, 0.12) if is_hidden else Color(0.94, 0.93, 0.87), 0.3)
 		card_node.add_child(card_mesh)
-		if not (hide_second and index == 1):
-			var face := Label3D.new()
-			face.text = Rules.card_label(hand[index])
-			face.font_size = 64
-			face.pixel_size = 0.0028
-			face.position = Vector3(-0.25, 0.04, -0.32)
-			face.rotation_degrees.x = -90
-			face.modulate = Color(0.65, 0.08, 0.08) if int(hand[index].suit) in [1, 2] else Color(0.05, 0.06, 0.07)
-			card_node.add_child(face)
+		_add_card_border(card_node, Color(0.76, 0.59, 0.28) if is_hidden else Color(0.42, 0.34, 0.23))
+		if is_hidden:
+			_add_card_text(card_node, "✦", Vector3(0, 0.041, 0), 112, Color(0.88, 0.68, 0.3))
+			_add_card_text(card_node, "SURVIVAL 21", Vector3(0, 0.041, -0.34), 18, Color(0.82, 0.68, 0.42))
+			_add_card_text(card_node, "✦", Vector3(0, 0.041, 0.34), 42, Color(0.88, 0.68, 0.3))
+		else:
+			var label := Rules.card_label(hand[index])
+			var rank_text := label.substr(0, label.length() - 1)
+			var suit_text := label.substr(label.length() - 1, 1)
+			var ink := Color(0.65, 0.08, 0.08) if int(hand[index].suit) in [1, 2] else Color(0.05, 0.06, 0.07)
+			_add_card_text(card_node, suit_text, Vector3(0, 0.041, 0.0), 112, ink)
+			_add_card_text(card_node, rank_text + suit_text, Vector3(-0.25, 0.041, -0.36), 32, ink)
+			_add_card_text(card_node, rank_text + suit_text, Vector3(0.25, 0.041, 0.36), 32, ink, 180)
+
+func _add_card_text(parent: Node3D, value: String, card_position: Vector3, font_size: int, color: Color, rotation_y: float = 0.0) -> void:
+	var face := Label3D.new()
+	face.text = value
+	face.font_size = font_size
+	face.pixel_size = 0.0024
+	face.position = card_position
+	face.rotation_degrees = Vector3(-90, rotation_y, 0)
+	face.modulate = color
+	face.no_depth_test = true
+	parent.add_child(face)
+
+func _add_card_border(parent: Node3D, color: Color) -> void:
+	var edge_specs := [
+		[Vector3(0.68, 0.008, 0.018), Vector3(0, 0.032, -0.48)],
+		[Vector3(0.68, 0.008, 0.018), Vector3(0, 0.032, 0.48)],
+		[Vector3(0.018, 0.008, 0.94), Vector3(-0.33, 0.032, 0)],
+		[Vector3(0.018, 0.008, 0.94), Vector3(0.33, 0.032, 0)]
+	]
+	for edge_spec in edge_specs:
+		var edge := MeshInstance3D.new()
+		var edge_mesh := BoxMesh.new()
+		edge_mesh.size = edge_spec[0]
+		edge.mesh = edge_mesh
+		edge.position = edge_spec[1]
+		edge.material_override = _material(color, 0.28)
+		parent.add_child(edge)
 
 func _update_ui() -> void:
 	var dealer_value := "?" if round_active and not dealer_revealed else str(Rules.hand_value(dealer_hand))

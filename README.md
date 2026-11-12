@@ -4,7 +4,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Current implementation
 
-- Procedural 3D blackjack table, 3D cards, and support pedestal.
+- Procedural 3D blackjack table, 3D cards with corner indices and central suit glyphs, a gold-emblem card back, and support pedestal.
 - Post-apocalyptic arena dressing using Quaternius street-intersection, streetlight, and shipping-container models, with warm point lights.
 - Blackjack rules with ace handling, natural blackjack priority, busts, and dealer resolution.
 - Hit, Stand, Double, and Next Hand actions, with keyboard shortcuts, gamepad mappings, and touchscreen buttons.
@@ -32,7 +32,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 ## Roadmap
 
 - [x] Core blackjack rules and automated tests.
-- [x] 3D table, cards, dealing, and player controls.
+- [x] 3D table, detailed procedural card faces/backs, dealing, and player controls.
 - [x] Opponent personalities, selectable unlocked starting Houses, unique dealer appearances, and encounter-specific dealer behavior.
 - [x] Survival health, progression, medkit, and tactical items.
 - [x] Completed-round save/load and run restart.

@@ -142,3 +142,9 @@ All game buttons are keyboard-focusable and expose tooltips.
 - The game generates an original eight-second dark ambient chord progression with a slow bass pulse and soft bell accents.
 - Music loops seamlessly and has an independent volume slider, separate from ambience and sound effects.
 - Music volume persists in settings and is included in automated audio/settings tests.
+
+## Card presentation
+
+- Face-up cards show a large central suit glyph with corner rank/suit indices and suit-specific red/black ink.
+- The dealer's hidden card uses a dark navy back with a gold border and original Survival 21 emblem.
+- Card border and face geometry are generated from simple meshes; no external card image pack is required.
