@@ -59,8 +59,8 @@ jobs:
         run: godot --headless --path . --script res://tests/zombie_animation_test.gd
       - name: Headless scene smoke test
         run: |
-          set -o pipefail
-          timeout 20s godot --headless --path . --quit-after 5 2>&1 | tee /tmp/main-scene.log
+          timeout 20s godot --headless --path . --quit-after 5 > /tmp/main-scene.log 2>&1
+          cat /tmp/main-scene.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed to load script" /tmp/main-scene.log; then
             echo "Main scene emitted a script parse/load error."
             exit 1
