@@ -47,6 +47,13 @@ func _initialize() -> void:
 	_expect(effects.accessibility_name == "Sound effects volume", "Effects slider should be named")
 	_expect(scale.accessibility_name == "Interface scale", "Scale slider should be named")
 	_expect(contrast.accessibility_name == "High contrast", "Contrast toggle should be named")
+	var starting_selector := scene.get("starting_opponent_selector") as OptionButton
+	var starting_label := scene.find_child("StartingOpponentLabel", true, false) as Label
+	_expect(starting_selector.accessibility_name == "Starting opponent", "Starting opponent selector should be accessible")
+	_expect(starting_selector.is_item_disabled(1), "Collector should remain locked until defeated")
+	_expect(starting_selector.is_item_disabled(2), "The House should remain locked until defeated")
+	_expect(starting_label.get_node_or_null(starting_label.accessibility_flow_to_nodes[0]) == starting_selector, "Starting house label should flow to its selector")
+	_expect(int(scene.get("run_starting_tier")) == 0, "Changing next-run preferences must not alter the active run's opponent tier")
 	var ambience_label := scene.find_child("AmbienceLabel", true, false) as Label
 	var effects_label := scene.find_child("EffectsLabel", true, false) as Label
 	_expect(ambience_label.accessibility_name == "Ambience volume", "Ambience label should be accessible")
