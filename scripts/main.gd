@@ -174,7 +174,7 @@ func _new_round() -> void:
 	_draw_card(dealer_hand)
 	round_active = true
 	status_label.text = "Round %d — choose your move." % round_number
-	if Rules.is_blackjack(player_hand):
+	if Rules.is_blackjack(player_hand) or Rules.is_blackjack(dealer_hand):
 		_finish_round()
 	_update_ui()
 	_render_cards()
