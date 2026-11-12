@@ -7,7 +7,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Procedural 3D blackjack table, 3D cards, and a support pedestal.
 - Post-apocalyptic arena dressing using Quaternius street-intersection, streetlight, and shipping-container models, with warm point lights.
 - Blackjack rules with ace handling, natural blackjack priority, busts, and dealer resolution.
-- Hit, Stand, Double, and Next Hand actions.
+- Hit, Stand, Double, and Next Hand actions, with keyboard shortcuts H/S/D/N and M/B for the two tactical items.
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
 - Survival run with three hearts, five wins to escape, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
@@ -26,6 +26,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - **Zombie Idle and Idle_Attack animation playback:** passed in run #30.
 - **Android arm64 APK export:** passed in run #29 for commit `493bd5f`; APK integrity, package identifier, and arm64 libraries verified. The APK from that run does not yet include the environment prop additions below.
 - **Latest environment props:** added after run #29; awaiting the next scene import and Android build.
+- **Desktop keyboard input:** added; CI compile/smoke verification pending.
 - **Emulator/physical-device testing:** not yet performed.
 
 [Run #29 Android APK](https://github.com/kage049754/Cgame/actions/runs/43213052304)

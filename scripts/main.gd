@@ -93,6 +93,27 @@ func _restore_run() -> bool:
 	items.house_bells = clampi(int(state.get("house_bells", 1)), 0, SurvivalItemsState.STARTING_HOUSE_BELLS)
 	return true
 
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not event is InputEventKey or not event.pressed or event.echo:
+		return
+	match event.keycode:
+		KEY_H:
+			_on_hit()
+		KEY_S:
+			_on_stand()
+		KEY_D:
+			_on_double()
+		KEY_N:
+			_on_next_hand()
+		KEY_M:
+			_on_marked_card()
+		KEY_B:
+			_on_house_bell()
+		KEY_R:
+			if restart_button.visible:
+				_on_restart()
+	get_viewport().set_input_as_handled()
+
 func _build_table() -> void:
 	var camera := Camera3D.new()
 	camera.position = Vector3(0, 7.2, 9.5)
@@ -249,7 +270,7 @@ func _build_ui() -> void:
 	column.add_child(restart_button)
 
 	var hint := Label.new()
-	hint.text = "Beat the dealer. Don't go over 21."
+	hint.text = "Beat the dealer. H Hit | S Stand | D Double | N Next | M Mark | B Bell"
 	hint.add_theme_color_override("font_color", Color(0.72, 0.78, 0.75))
 	column.add_child(hint)
 
@@ -257,6 +278,8 @@ func _make_button(caption: String, callback: Callable) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.custom_minimum_size = Vector2(86, 42)
+	button.focus_mode = Control.FOCUS_ALL
+	button.tooltip_text = caption
 	button.pressed.connect(callback)
 	return button
 

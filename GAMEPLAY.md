@@ -52,3 +52,15 @@
 - The game synthesizes an original low-frequency ambience loop at runtime.
 - Card draw, win, loss, push, and item effects are generated from original oscillator waveforms.
 - No third-party music or audio files are bundled.
+
+## Keyboard controls
+
+- H: Hit
+- S: Stand
+- D: Double
+- N: Next hand
+- M: Use Marked Card
+- B: Use House Bell
+- R: Restart after a run ends or chips are depleted
+
+All game buttons are keyboard-focusable and expose tooltips.
