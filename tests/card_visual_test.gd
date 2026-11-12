@@ -9,7 +9,7 @@ func _initialize() -> void:
 	scene.set("dealer_revealed", false)
 	scene.call("_render_cards", true, false, false)
 	var cards_before_tween := scene.get("cards_root") as Node3D
-	if cards_before_tween.get_child(0).position.y < 1.0:
+	if cards_before_tween.get_child(player_hand.size() - 1).position.y < 1.0:
 		push_error("Newly dealt card should enter from above the table.")
 		quit(1)
 		return
