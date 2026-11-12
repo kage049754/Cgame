@@ -7,9 +7,6 @@ static func win_bonus_for(event: Dictionary, dealer_bust: bool) -> int:
 static func loss_tax_for(event: Dictionary, player_bust: bool) -> int:
 	return int(event.get("loss_tax", 0)) + (int(event.get("player_bust_tax", 0)) if player_bust else 0)
 
-class_name EncounterEvents
-extends RefCounted
-
 static func event_for_round(round_number: int) -> Dictionary:
 	if round_number > 0 and round_number % 5 == 0:
 		return {
