@@ -440,12 +440,16 @@ func _build_ui() -> void:
 	var settings_column := VBoxContainer.new()
 	settings_panel.add_child(settings_column)
 	var settings_title := Label.new()
+	settings_title.name = "SettingsTitle"
 	settings_title.text = "AUDIO SETTINGS"
 	settings_title.accessibility_name = "Settings"
 	settings_title.accessibility_description = "Audio, display scale, and contrast options."
 	settings_column.add_child(settings_title)
 	var ambience_label := Label.new()
+	ambience_label.name = "AmbienceLabel"
 	ambience_label.text = "AMBIENCE VOLUME"
+	ambience_label.accessibility_name = "Ambience volume"
+	ambience_label.accessibility_description = "Label for the background ambience volume slider."
 	settings_column.add_child(ambience_label)
 	ambience_slider = HSlider.new()
 	ambience_slider.min_value = 0
@@ -457,7 +461,10 @@ func _build_ui() -> void:
 	ambience_slider.value_changed.connect(_on_ambience_volume_changed)
 	settings_column.add_child(ambience_slider)
 	var effects_label := Label.new()
+	effects_label.name = "EffectsLabel"
 	effects_label.text = "SOUND EFFECT VOLUME"
+	effects_label.accessibility_name = "Sound effects volume"
+	effects_label.accessibility_description = "Label for the sound effects volume slider."
 	settings_column.add_child(effects_label)
 	effects_slider = HSlider.new()
 	effects_slider.min_value = 0
@@ -469,7 +476,10 @@ func _build_ui() -> void:
 	effects_slider.value_changed.connect(_on_effects_volume_changed)
 	settings_column.add_child(effects_slider)
 	var scale_label := Label.new()
+	scale_label.name = "ScaleLabel"
 	scale_label.text = "UI SCALE"
+	scale_label.accessibility_name = "Interface scale"
+	scale_label.accessibility_description = "Label for the interface scale slider."
 	settings_column.add_child(scale_label)
 	ui_scale_slider = HSlider.new()
 	ui_scale_slider.min_value = 0.8
@@ -500,6 +510,10 @@ func _build_ui() -> void:
 		medkit_button, marked_button, bell_button, settings_button, archive_button, restart_button
 	])
 	_link_focus_order([ambience_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
+	_link_accessibility_flow([
+		settings_title, ambience_label, ambience_slider, effects_label, effects_slider,
+		scale_label, ui_scale_slider, high_contrast_toggle, close_settings
+	])
 	hit_button.grab_focus()
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
@@ -718,15 +732,20 @@ func _finish_round() -> void:
 func _show_archive() -> void:
 	archive_dialog.dialog_text = progression.archive_text()
 	archive_dialog.popup_centered()
-	for node in archive_dialog.find_children("*", "Label", true, false):
+	var archive_labels := archive_dialog.find_children("*", "Label", true, false)
+	var archive_buttons := archive_dialog.find_children("*", "Button", true, false)
+	for node in archive_labels:
 		var archive_label := node as Label
 		archive_label.accessibility_name = "Survival archive entries"
 		archive_label.accessibility_description = archive_dialog.dialog_text
-	for node in archive_dialog.find_children("*", "Button", true, false):
+	for node in archive_buttons:
 		var dialog_button := node as Button
 		dialog_button.accessibility_name = "Close survival archive"
 		dialog_button.accessibility_description = "Close the archive and return to the Archive button."
 		dialog_button.grab_focus()
+	if not archive_labels.is_empty() and not archive_buttons.is_empty():
+		var archive_label := archive_labels[0] as Label
+		archive_label.accessibility_flow_to_nodes = [archive_label.get_path_to(archive_buttons[0])]
 
 func _render_cards() -> void:
 	for child in cards_root.get_children():

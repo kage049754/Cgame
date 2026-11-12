@@ -47,6 +47,21 @@ func _initialize() -> void:
 	_expect(effects.accessibility_name == "Sound effects volume", "Effects slider should be named")
 	_expect(scale.accessibility_name == "Interface scale", "Scale slider should be named")
 	_expect(contrast.accessibility_name == "High contrast", "Contrast toggle should be named")
+	var ambience_label := scene.find_child("AmbienceLabel", true, false) as Label
+	var effects_label := scene.find_child("EffectsLabel", true, false) as Label
+	_expect(ambience_label.accessibility_name == "Ambience volume", "Ambience label should be accessible")
+	_expect(ambience_label.get_node_or_null(ambience_label.accessibility_flow_to_nodes[0]) == ambience, "Ambience label should describe its slider")
+	_expect(effects_label.get_node_or_null(effects_label.accessibility_flow_to_nodes[0]) == effects, "Effects label should describe its slider")
+	scene.call("_show_archive")
+	var archive_dialog := scene.get("archive_dialog") as AcceptDialog
+	var archive_labels := archive_dialog.find_children("*", "Label", true, false)
+	var archive_buttons := archive_dialog.find_children("*", "Button", true, false)
+	_expect(not archive_labels.is_empty(), "Archive should expose its content label")
+	_expect(not archive_buttons.is_empty(), "Archive should expose a close button")
+	if not archive_labels.is_empty() and not archive_buttons.is_empty():
+		var archive_label := archive_labels[0] as Label
+		_expect(archive_label.accessibility_name == "Survival archive entries", "Archive content should have an accessible name")
+		_expect(archive_label.get_node_or_null(archive_label.accessibility_flow_to_nodes[0]) == archive_buttons[0], "Archive content should flow to its close action")
 	if failures > 0:
 		push_error("Accessibility metadata test failed with %d assertion(s)." % failures)
 		quit(1)
