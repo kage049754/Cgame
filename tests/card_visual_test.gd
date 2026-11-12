@@ -7,7 +7,12 @@ func _initialize() -> void:
 		await process_frame
 	scene.set("round_active", true)
 	scene.set("dealer_revealed", false)
-	scene.call("_render_cards")
+	scene.call("_render_cards", true, false, false)
+	var cards_before_tween := scene.get("cards_root") as Node3D
+	if cards_before_tween.get_child(0).position.y < 1.0:
+		push_error("Newly dealt card should enter from above the table.")
+		quit(1)
+		return
 	await process_frame
 	var cards_root := scene.get("cards_root") as Node3D
 	var player_hand: Array = scene.get("player_hand")

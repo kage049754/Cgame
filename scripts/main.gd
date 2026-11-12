@@ -696,7 +696,7 @@ func _new_round() -> void:
 	if Rules.is_blackjack(player_hand) or Rules.is_blackjack(dealer_hand):
 		_finish_round()
 	_update_ui()
-	_render_cards()
+	_render_cards(false, false, true)
 
 func _on_restart() -> void:
 	SaveSystem.delete_state()
@@ -722,7 +722,7 @@ func _on_hit() -> void:
 	else:
 		status_label.text = "You drew %s." % Rules.card_label(player_hand.back())
 	_update_ui()
-	_render_cards()
+	_render_cards(true, false, false)
 
 func _on_stand() -> void:
 	if not round_active:
@@ -731,7 +731,7 @@ func _on_stand() -> void:
 		_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
-	_render_cards()
+	_render_cards(false, true, false)
 
 func _on_double() -> void:
 	if not round_active or player_hand.size() != 2 or chips < current_bet:
@@ -744,7 +744,7 @@ func _on_double() -> void:
 			_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
-	_render_cards()
+	_render_cards(true, true, false)
 
 func _on_next_hand() -> void:
 	if not round_active and not survival.finished:
@@ -767,7 +767,7 @@ func _on_marked_card() -> void:
 		if audio_system != null:
 			audio_system.call("play_item")
 		_update_ui()
-		_render_cards()
+		_render_cards(false, true, false)
 
 func _on_house_bell() -> void:
 	if items.use_house_bell(round_active):
@@ -836,18 +836,26 @@ func _show_archive() -> void:
 		var archive_label := archive_labels[0] as Label
 		archive_label.accessibility_flow_to_nodes = [archive_label.get_path_to(archive_buttons[0])]
 
-func _render_cards() -> void:
+func _render_cards(animate_player_last: bool = false, animate_dealer_last: bool = false, animate_all: bool = false) -> void:
 	for child in cards_root.get_children():
 		child.queue_free()
-	_add_hand_visuals(player_hand, Vector3(-1.65, 0.34, 1.45), false)
-	_add_hand_visuals(dealer_hand, Vector3(-1.65, 0.34, -1.25), round_active and not dealer_revealed)
+	_add_hand_visuals(player_hand, Vector3(-1.65, 0.34, 1.45), false, animate_player_last, animate_all)
+	_add_hand_visuals(dealer_hand, Vector3(-1.65, 0.34, -1.25), round_active and not dealer_revealed, animate_dealer_last, animate_all)
 
-func _add_hand_visuals(hand: Array[Dictionary], origin: Vector3, hide_second: bool) -> void:
+func _add_hand_visuals(hand: Array[Dictionary], origin: Vector3, hide_second: bool, animate_last: bool = false, animate_all: bool = false) -> void:
 	for index in range(hand.size()):
 		var is_hidden := hide_second and index == 1
 		var card_node := Node3D.new()
-		card_node.position = origin + Vector3(index * 0.85, index * 0.012, 0)
+		var target_position := origin + Vector3(index * 0.85, index * 0.012, 0)
+		var should_animate := animate_all or (animate_last and index == hand.size() - 1)
+		card_node.position = target_position + (Vector3(0, 1.35, 0) if should_animate else Vector3.ZERO)
+		card_node.rotation_degrees = Vector3(-14, 0, 0) if should_animate else Vector3.ZERO
 		cards_root.add_child(card_node)
+		if should_animate:
+			var entry_tween := create_tween()
+			entry_tween.set_parallel(true)
+			entry_tween.tween_property(card_node, "position", target_position, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(index * 0.045)
+			entry_tween.tween_property(card_node, "rotation_degrees", Vector3.ZERO, 0.28)
 		var card_mesh := MeshInstance3D.new()
 		var box := BoxMesh.new()
 		box.size = Vector3(0.72, 0.055, 1.02)

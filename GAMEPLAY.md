@@ -148,3 +148,4 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Face-up cards show a large central suit glyph with corner rank/suit indices and suit-specific red/black ink.
 - The dealer's hidden card uses a dark navy back with a gold border and original Survival 21 emblem.
 - Card border and face geometry are generated from simple meshes; no external card image pack is required.
+- New hands deal in with a staggered drop-and-settle motion; newly drawn player/dealer cards animate individually.
