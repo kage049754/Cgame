@@ -45,6 +45,8 @@ func _initialize() -> void:
 	_expect((scene.get("archive_button") as Button).accessibility_name.contains("of 6 entries unlocked"), "Archive button should expose a dynamic unlock count")
 	_expect(ambience.accessibility_name == "Ambience volume", "Ambience slider should be named")
 	_expect(effects.accessibility_name == "Sound effects volume", "Effects slider should be named")
+	var music := scene.get("music_slider") as HSlider
+	_expect(music.accessibility_name == "Background music volume", "Music slider should be named")
 	_expect(scale.accessibility_name == "Interface scale", "Scale slider should be named")
 	_expect(contrast.accessibility_name == "High contrast", "Contrast toggle should be named")
 	var starting_selector := scene.get("starting_opponent_selector") as OptionButton
@@ -56,9 +58,11 @@ func _initialize() -> void:
 	_expect(int(scene.get("run_starting_tier")) == 0, "Changing next-run preferences must not alter the active run's opponent tier")
 	var ambience_label := scene.find_child("AmbienceLabel", true, false) as Label
 	var effects_label := scene.find_child("EffectsLabel", true, false) as Label
+	var music_label := scene.find_child("MusicLabel", true, false) as Label
 	_expect(ambience_label.accessibility_name == "Ambience volume", "Ambience label should be accessible")
 	_expect(ambience_label.get_node_or_null(ambience_label.accessibility_flow_to_nodes[0]) == ambience, "Ambience label should describe its slider")
 	_expect(effects_label.get_node_or_null(effects_label.accessibility_flow_to_nodes[0]) == effects, "Effects label should describe its slider")
+	_expect(music_label.get_node_or_null(music_label.accessibility_flow_to_nodes[0]) == music, "Music label should describe its slider")
 	scene.call("_show_archive")
 	var archive_dialog := scene.get("archive_dialog") as AcceptDialog
 	var archive_labels := archive_dialog.find_children("*", "Label", true, false)

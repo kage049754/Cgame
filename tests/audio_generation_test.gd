@@ -11,7 +11,8 @@ func _verify_audio(audio_system: Node) -> void:
 	await process_frame
 	var ambience := audio_system.get("ambience_stream") as AudioStreamWAV
 	var card := audio_system.get("card_stream") as AudioStreamWAV
-	if ambience == null or card == null:
+	var music := audio_system.get("music_stream") as AudioStreamWAV
+	if ambience == null or card == null or music == null:
 		push_error("Procedural audio streams were not generated.")
 		quit(1)
 		return
@@ -23,5 +24,9 @@ func _verify_audio(audio_system: Node) -> void:
 		push_error("Card sound effect stream is empty.")
 		quit(1)
 		return
-	print("Procedural ambient and card audio generation passed.")
+	if music.data.size() < 300000 or music.loop_mode != AudioStreamWAV.LOOP_FORWARD:
+		push_error("Original background music stream is missing data or loop configuration.")
+		quit(1)
+		return
+	print("Procedural ambience, original background music, and sound effects passed.")
 	quit()

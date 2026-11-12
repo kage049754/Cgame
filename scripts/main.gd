@@ -59,6 +59,7 @@ var archive_button: Button
 var archive_dialog: AcceptDialog
 var progression := ProgressionState.new()
 var ambience_slider: HSlider
+var music_slider: HSlider
 var effects_slider: HSlider
 var house_bell_active := false
 var current_event: Dictionary = {}
@@ -130,6 +131,7 @@ func _toggle_settings() -> void:
 func _load_settings() -> void:
 	var settings := SettingsStore.load_settings()
 	ambience_slider.value = float(settings.get("ambience_percent", 4.0))
+	music_slider.value = float(settings.get("music_percent", 20.0))
 	effects_slider.value = float(settings.get("effects_percent", 35.0))
 	ui_scale_slider.value = clampf(float(settings.get("ui_scale", 1.0)), 0.8, 1.3)
 	high_contrast_toggle.button_pressed = bool(settings.get("high_contrast", false))
@@ -137,6 +139,7 @@ func _load_settings() -> void:
 	starting_opponent_selector.select(selected_starting_tier)
 	_refresh_opponent_choices()
 	_on_ambience_volume_changed(ambience_slider.value)
+	_on_music_volume_changed(music_slider.value)
 	_on_effects_volume_changed(effects_slider.value)
 	_apply_ui_scale(ui_scale_slider.value)
 	_apply_high_contrast(high_contrast_toggle.button_pressed)
@@ -144,6 +147,7 @@ func _load_settings() -> void:
 func _save_settings() -> void:
 	SettingsStore.save_settings({
 		"ambience_percent": ambience_slider.value,
+		"music_percent": music_slider.value,
 		"effects_percent": effects_slider.value,
 		"ui_scale": ui_scale_slider.value,
 		"high_contrast": high_contrast_toggle.button_pressed,
@@ -227,6 +231,11 @@ func _apply_high_contrast(enabled: bool) -> void:
 func _on_ambience_volume_changed(value: float) -> void:
 	if audio_system != null:
 		audio_system.call("set_ambience_volume", value / 100.0)
+	_save_settings()
+
+func _on_music_volume_changed(value: float) -> void:
+	if audio_system != null:
+		audio_system.call("set_music_volume", value / 100.0)
 	_save_settings()
 
 func _on_effects_volume_changed(value: float) -> void:
@@ -515,6 +524,21 @@ func _build_ui() -> void:
 	ambience_slider.accessibility_description = "Adjust background horror ambience from zero to one hundred percent."
 	ambience_slider.value_changed.connect(_on_ambience_volume_changed)
 	settings_column.add_child(ambience_slider)
+	var music_label := Label.new()
+	music_label.name = "MusicLabel"
+	music_label.text = "BACKGROUND MUSIC"
+	music_label.accessibility_name = "Background music volume"
+	music_label.accessibility_description = "Label for the background music volume slider."
+	settings_column.add_child(music_label)
+	music_slider = HSlider.new()
+	music_slider.min_value = 0
+	music_slider.max_value = 100
+	music_slider.step = 1
+	music_slider.custom_minimum_size = Vector2(260, 32)
+	music_slider.accessibility_name = "Background music volume"
+	music_slider.accessibility_description = "Adjust the original looping horror music from zero to one hundred percent."
+	music_slider.value_changed.connect(_on_music_volume_changed)
+	settings_column.add_child(music_slider)
 	var effects_label := Label.new()
 	effects_label.name = "EffectsLabel"
 	effects_label.text = "SOUND EFFECT VOLUME"
@@ -564,10 +588,10 @@ func _build_ui() -> void:
 		event_label, survival_label, hit_button, stand_button, double_button, deal_button,
 		medkit_button, marked_button, bell_button, settings_button, archive_button, restart_button
 	])
-	_link_focus_order([starting_opponent_selector, ambience_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
+	_link_focus_order([starting_opponent_selector, ambience_slider, music_slider, effects_slider, ui_scale_slider, high_contrast_toggle, close_settings])
 	_link_accessibility_flow([
 		settings_title, starting_opponent_label, starting_opponent_selector,
-		ambience_label, ambience_slider, effects_label, effects_slider,
+		ambience_label, ambience_slider, music_label, music_slider, effects_label, effects_slider,
 		scale_label, ui_scale_slider, high_contrast_toggle, close_settings
 	])
 	hit_button.grab_focus()

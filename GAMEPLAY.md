@@ -136,3 +136,9 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Collector uses a dark teal body finish and teal eye glow.
 - The House uses a bronze-gold metallic finish and amber eye glow.
 - The dealer appearance updates when the active run escalates to a new personality.
+
+## Original background music
+
+- The game generates an original eight-second dark ambient chord progression with a slow bass pulse and soft bell accents.
+- Music loops seamlessly and has an independent volume slider, separate from ambience and sound effects.
+- Music volume persists in settings and is included in automated audio/settings tests.

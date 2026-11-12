@@ -4,7 +4,7 @@ const SettingsStore = preload("res://scripts/settings_store.gd")
 
 func _initialize() -> void:
 	var path := "user://settings_test.cfg"
-	var values := {"ambience_percent": 12.0, "effects_percent": 68.0, "ui_scale": 1.25, "high_contrast": true, "starting_opponent_tier": 2}
+	var values := {"ambience_percent": 12.0, "music_percent": 43.0, "effects_percent": 68.0, "ui_scale": 1.25, "high_contrast": true, "starting_opponent_tier": 2}
 	if not SettingsStore.save_settings(values, path):
 		push_error("Could not save settings.")
 		quit(1)
@@ -12,6 +12,10 @@ func _initialize() -> void:
 	var loaded := SettingsStore.load_settings(path)
 	if not is_equal_approx(float(loaded.get("ambience_percent", 0.0)), 12.0):
 		push_error("Ambience setting did not round-trip.")
+		quit(1)
+		return
+	if not is_equal_approx(float(loaded.get("music_percent", 0.0)), 43.0):
+		push_error("Music volume setting did not round-trip.")
 		quit(1)
 		return
 	if not is_equal_approx(float(loaded.get("effects_percent", 0.0)), 68.0):
