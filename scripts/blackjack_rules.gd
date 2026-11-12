@@ -27,6 +27,14 @@ static func is_bust(cards: Array) -> bool:
 	return hand_value(cards) > TARGET
 
 static func outcome(player_cards: Array, dealer_cards: Array) -> String:
+	var player_natural := is_blackjack(player_cards)
+	var dealer_natural := is_blackjack(dealer_cards)
+	if player_natural and dealer_natural:
+		return "push"
+	if dealer_natural:
+		return "lose"
+	if player_natural:
+		return "win"
 	var player := hand_value(player_cards)
 	var dealer := hand_value(dealer_cards)
 	if player > TARGET:
