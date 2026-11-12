@@ -15,14 +15,14 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Godot import and script registration:** passed in GitHub Actions run #17.
-- **Automated gameplay tests:** passed in run #17; previous run #10 log reported `All Survival 21 tests passed.`
-- **Headless main-scene smoke test:** passed in run #17.
-- **Android APK export:** CI now installs the matching Godot export templates and configures the JDK/Android SDK; the latest export attempt is pending verification.
+- **Godot import and scene smoke test:** passed in run #17 for commit `dfa7347`.
+- **Automated gameplay tests:** passed in run #17 for the same earlier commit. The newly added opponent-profile tests are pending their own CI result.
+- **Android APK export:** run #17 reached the export job but failed before export because the container did not include `curl`. The workflow now installs `curl` and `unzip` before downloading Godot's matching Android templates; this correction is pending CI verification.
+- **APK integrity and arm64 library inspection:** not yet passed.
 - **Emulator/physical-device testing:** not yet performed.
 - **Third-party 3D assets:** not yet imported; candidate packs and license notes are tracked in `THIRD_PARTY_ASSETS.md`.
 
-[Run #17](https://github.com/kage049754/Cgame/actions/runs/43210384111)
+[Run #17 logs](https://github.com/kage049754/Cgame/actions/runs/43210384111)
 
 ## Development principles
 
@@ -36,7 +36,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 - [x] Core blackjack rules and automated tests.
 - [x] 3D table, cards, dealing, and player controls.
-- [x] Opponent personalities and encounter-specific dealer behavior.
+- [x] Opponent personalities and encounter-specific dealer behavior (implementation added; current tests pending).
 - [x] Initial survival health, win progression, and medkit.
 - [ ] Additional tactical items and encounter events.
 - [ ] Horror environments, character models, audio, animations, and visual effects.
@@ -54,7 +54,7 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Android build
 
-GitHub Actions installs Godot 4.4.1 export templates, configures the Android SDK and JDK, and exports an arm64 debug APK using `export_presets.cfg`. The APK is published as the `Survival21-Android-arm64-debug` workflow artifact after export and integrity checks pass.
+GitHub Actions installs the matching Godot 4.4.1 export templates, configures the Android SDK and JDK, and exports an arm64 debug APK using `export_presets.cfg`. The APK is published as the `Survival21-Android-arm64-debug` workflow artifact only after export and integrity checks pass.
 
 ## License and assets
 
