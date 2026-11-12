@@ -1,0 +1,32 @@
+name: Survival 21 CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  blackjack-tests:
+    name: Blackjack rules and project validation
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify project files
+        run: |
+          test -f project.godot
+          test -f scenes/main.tscn
+          test -f scripts/blackjack_rules.gd
+          test -f scripts/main.gd
+      - name: Import project
+        run: godot --headless --editor --path . --quit
+      - name: Run blackjack rule tests
+        run: godot --headless --path . --script res://tests/run_tests.gd
+      - name: Headless scene smoke test
+        run: timeout 20s godot --headless --path . --quit-after 5
