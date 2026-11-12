@@ -59,28 +59,48 @@ jobs:
           curl -fL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -o /tmp/godot-templates/templates.tpz
           unzip -q /tmp/godot-templates/templates.tpz -d /tmp/godot-templates/unpacked
           cp -a /tmp/godot-templates/unpacked/templates/. "$TEMPLATE_DIR/"
+          test -f "$TEMPLATE_DIR/android_debug.apk"
+          test -f "$TEMPLATE_DIR/android_release.apk"
+          test -f "$TEMPLATE_DIR/version.txt"
+          ls -lh "$TEMPLATE_DIR"/android_*.apk
       - name: Configure Android SDK paths
         run: |
           JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
           mkdir -p "$HOME/.config/godot"
+          mkdir -p "$HOME/.android"
+          keytool -genkeypair -v -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000 -noprompt
           cat > "$HOME/.config/godot/editor_settings-4.4.tres" <<EOF
           [gd_resource type="EditorSettings" format=3]
           [resource]
           export/android/java_sdk_path = "$JAVA_HOME"
           export/android/android_sdk_path = "$ANDROID_HOME"
+          export/android/debug_keystore = "$HOME/.android/debug.keystore"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
           EOF
           test -d "$JAVA_HOME"
           test -d "$ANDROID_HOME"
+          test -x "$ANDROID_HOME/platform-tools/adb"
+          test -f "$HOME/.android/debug.keystore"
           java -version
+          cat "$HOME/.config/godot/editor_settings-4.4.tres"
       - name: Import project
         run: godot --headless --editor --path . --quit
       - name: Export and verify Android APK
         run: |
           mkdir -p build
-          godot --headless --path . --export-debug "Android" build/Survival21.apk
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PATH="$HOME/.android/debug.keystore"
+          export GODOT_ANDROID_KEYSTORE_DEBUG_USER="androiddebugkey"
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD="android"
+          godot --headless --verbose --path . --export-debug "Android" build/Survival21.apk 2>&1 | tee /tmp/android-export.log
           test -s build/Survival21.apk
           unzip -t build/Survival21.apk
           unzip -l build/Survival21.apk | grep -E 'lib/arm64-v8a/.*\.so'
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort | tail -n 1)"
+          test -n "$AAPT"
+          "$AAPT" dump badging build/Survival21.apk | tee /tmp/apk-badging.txt
+          grep -F "package: name='com.kage049754.survival21'" /tmp/apk-badging.txt
+          grep -F "native-code: 'arm64-v8a'" /tmp/apk-badging.txt
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:

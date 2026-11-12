@@ -10,17 +10,19 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
 - Survival run with three hearts, five wins to escape, loss tracking, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
-- Quaternius Superhero Male humanoid model integrated as a dark dealer silhouette, with a red-eye visual treatment. Original CC0 license notice and asset provenance are included.
+- Quaternius Superhero Male humanoid model integrated as a dark dealer silhouette with red-eye treatment. Original CC0 license notice and provenance are included.
 - Automated blackjack, survival progression, soft-hand, and opponent AI tests.
 - Godot 4.4.1 headless scene smoke test.
 
 ## Verification status
 
-- **Core import, gameplay tests, and scene smoke test:** passed in run #18 for commit `f2e4ef1`, before the Quaternius model integration.
-- **Android APK export:** earlier attempts exposed missing export templates, Java SDK configuration, and a missing `curl` utility. The workflow now installs the download utilities, matching Godot 4.4.1 templates, and configures Android SDK/JDK paths. The current run is pending verification.
-- **APK integrity and arm64 library inspection:** not yet passed.
+- **Gameplay tests and scene smoke test:** passed in run #18 for commit `f2e4ef1`.
+- **Quaternius model integration:** committed in `6d93025`; the current CI run is the first to import and smoke-test this model.
+- **Android APK export:** run #19 installed the matching templates and curl successfully but export still failed with a general Android preset configuration error. The next workflow revision adds explicit template/JDK/SDK/debug-keystore checks and verbose export diagnostics.
+- **APK integrity, package metadata, and arm64 library inspection:** not yet passed.
 - **Emulator/physical-device testing:** not yet performed.
-- **Quaternius character asset:** source model and CC0 license notice are committed; the integrated scene still needs CI import and runtime verification.
+
+[Run #19 logs](https://github.com/kage049754/Cgame/actions/runs/43210737626)
 
 ## Development principles
 
@@ -51,7 +53,7 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Android build
 
-GitHub Actions installs the matching Godot 4.4.1 export templates, configures Android SDK/JDK paths, and exports an arm64 debug APK using `export_presets.cfg`. The APK is published as the `Survival21-Android-arm64-debug` artifact only after export and integrity checks pass.
+GitHub Actions installs the matching Godot 4.4.1 export templates, configures Android SDK/JDK paths and a temporary debug keystore, and exports an arm64 debug APK. It checks ZIP integrity, the package identifier, and the arm64 native library before uploading the APK artifact.
 
 ## License and assets
 
