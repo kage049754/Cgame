@@ -50,6 +50,7 @@ jobs:
           test -f tests/zombie_animation_test.gd
           test -f tests/dealer_appearance_test.gd
           test -f tests/card_visual_test.gd
+          test -f tests/visual_effects_test.gd
           test -f scenes/zombie_enemy.tscn
           test -f assets/licenses/QUATERNIUS-CC0-1.0.txt
           test -f export_presets.cfg
@@ -69,6 +70,8 @@ jobs:
         run: godot --headless --path . --script res://tests/dealer_appearance_test.gd
       - name: Verify blackjack card visuals
         run: godot --headless --path . --script res://tests/card_visual_test.gd
+      - name: Verify outcome visual effects
+        run: godot --headless --path . --script res://tests/visual_effects_test.gd
       - name: Headless scene smoke test
         shell: bash
         run: |

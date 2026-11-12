@@ -14,6 +14,7 @@ const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const AudioSystemScript = preload("res://scripts/procedural_audio.gd")
 const SettingsStore = preload("res://scripts/settings_store.gd")
 const ControllerInput = preload("res://scripts/controller_input.gd")
+const VisualEffects = preload("res://scripts/visual_effects.gd")
 const AccessibilityLayout = preload("res://scripts/accessibility_layout.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
 const STARTING_CHIPS := 500
@@ -42,6 +43,11 @@ var items := SurvivalItemsState.new()
 var dealer_revealed := false
 var zombie_character: Node3D
 var dealer_character: Node3D
+var main_camera: Camera3D
+var camera_rest_position := Vector3.ZERO
+var table_fill_light: OmniLight3D
+var outcome_light_tween: Tween
+var camera_shake_tween: Tween
 var audio_system: Node
 var settings_button: Button
 var settings_panel: PanelContainer
@@ -238,6 +244,27 @@ func _on_ambience_volume_changed(value: float) -> void:
 		audio_system.call("set_ambience_volume", value / 100.0)
 	_save_settings()
 
+func _play_outcome_effect(result: String) -> void:
+	if table_fill_light == null:
+		return
+	var flash_color := VisualEffects.flash_color(result)
+	if outcome_light_tween != null and outcome_light_tween.is_running():
+		outcome_light_tween.kill()
+	table_fill_light.light_color = flash_color
+	table_fill_light.light_energy = 2.8
+	outcome_light_tween = create_tween()
+	outcome_light_tween.set_parallel(true)
+	outcome_light_tween.tween_property(table_fill_light, "light_color", Color(0.35, 0.52, 0.48), 0.65)
+	outcome_light_tween.tween_property(table_fill_light, "light_energy", 1.8, 0.65)
+	if result == "lose" and main_camera != null:
+		if camera_shake_tween != null and camera_shake_tween.is_running():
+			camera_shake_tween.kill()
+		main_camera.position = camera_rest_position
+		camera_shake_tween = create_tween()
+		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position + Vector3(0.12, 0.035, 0), 0.045)
+		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position + Vector3(-0.10, -0.02, 0), 0.055)
+		camera_shake_tween.tween_property(main_camera, "position", camera_rest_position, 0.08)
+
 func _on_music_volume_changed(value: float) -> void:
 	if audio_system != null:
 		audio_system.call("set_music_volume", value / 100.0)
@@ -300,23 +327,24 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 func _build_table() -> void:
-	var camera := Camera3D.new()
-	camera.position = Vector3(0, 7.2, 9.5)
-	camera.rotation_degrees = Vector3(-34, 0, 0)
-	camera.current = true
-	add_child(camera)
+	main_camera = Camera3D.new()
+	main_camera.position = Vector3(0, 7.2, 9.5)
+	main_camera.rotation_degrees = Vector3(-34, 0, 0)
+	main_camera.current = true
+	camera_rest_position = main_camera.position
+	add_child(main_camera)
 
 	var key_light := DirectionalLight3D.new()
 	key_light.rotation_degrees = Vector3(-48, -25, 0)
 	key_light.light_energy = 1.25
 	add_child(key_light)
 
-	var fill := OmniLight3D.new()
-	fill.position = Vector3(0, 3.8, 1.5)
-	fill.light_color = Color(0.35, 0.52, 0.48)
-	fill.light_energy = 1.8
-	fill.omni_range = 12
-	add_child(fill)
+	table_fill_light = OmniLight3D.new()
+	table_fill_light.position = Vector3(0, 3.8, 1.5)
+	table_fill_light.light_color = Color(0.35, 0.52, 0.48)
+	table_fill_light.light_energy = 1.8
+	table_fill_light.omni_range = 12
+	add_child(table_fill_light)
 
 	var floor_mesh := MeshInstance3D.new()
 	var floor := BoxMesh.new()
@@ -786,6 +814,7 @@ func _finish_round() -> void:
 	var result := Rules.outcome(player_hand, dealer_hand)
 	survival.resolve_hand(result)
 	_refresh_dealer_appearance()
+	_play_outcome_effect(result)
 	if zombie_character != null:
 		zombie_character.call("play_outcome", result, survival.ending)
 	if audio_system != null:

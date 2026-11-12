@@ -149,3 +149,10 @@ All game buttons are keyboard-focusable and expose tooltips.
 - The dealer's hidden card uses a dark navy back with a gold border and original Survival 21 emblem.
 - Card border and face geometry are generated from simple meshes; no external card image pack is required.
 - New hands deal in with a staggered drop-and-settle motion; newly drawn player/dealer cards animate individually.
+
+## Outcome visual effects
+
+- Winning hands flash the table light green-gold.
+- Losses flash the table light red and trigger a short camera shake.
+- Pushes flash the table light violet.
+- The fill light eases back to its baseline color and intensity after each result.
