@@ -2,6 +2,7 @@ extends Node3D
 
 const Rules = preload("res://scripts/blackjack_rules.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
+const DealerCharacterScene = preload("res://scenes/dealer_character.tscn")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -81,6 +82,9 @@ func _build_table() -> void:
 	cards_root = Node3D.new()
 	cards_root.name = "Cards"
 	add_child(cards_root)
+	var dealer_character := DealerCharacterScene.instantiate()
+	dealer_character.position = Vector3(0, -0.75, -4.05)
+	add_child(dealer_character)
 
 func _material(color: Color, roughness: float = 0.65) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()

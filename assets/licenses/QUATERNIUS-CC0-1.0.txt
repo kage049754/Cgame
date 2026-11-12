@@ -1,0 +1,16 @@
+This is the standard FREE version of the Universal Base Characters Kit, which only contains
+a portion of the models. The SOURCE version has additional models and source projects.
+
+Original source: https://quaternius.com/packs/universalbasecharacters.html
+Official download: https://quaternius.itch.io/universal-base-characters
+
+License:
+CC0 1.0 Universal (CC0 1.0)
+Public Domain Dedication
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Models by Quaternius.
+The bundled GLB is a modified matte-material derivative of Superhero_Male_FullBody.gltf.
+Original model geometry, skeleton and skin weights are retained; image payloads and original
+textured materials were removed by the upstream packager. The GLB metadata retains Quaternius
+and CC0 1.0 attribution information.
