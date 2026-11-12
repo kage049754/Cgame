@@ -17,13 +17,13 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Core blackjack, opponent AI, and Quaternius model import:** passed in run #20. That run predates the tactical-item implementation.
-- **Tactical item integration and House Bell interaction:** committed after run #20; awaiting run #23 verification.
-- **Android APK export:** still being debugged. The workflow now installs matching templates, configures Android SDK/JDK paths and a temporary debug keystore, and prints verbose export diagnostics.
+- **Core blackjack, opponent AI, and Quaternius model import:** passed in run #20.
+- **Tactical item integration and House Bell interaction:** included in the latest main-branch commit; CI verification is pending.
+- **Android APK export:** run #21 installed templates, Java, and a debug keystore, but Android export still reported configuration errors. The logs showed only Build Tools 33.0.2 available; Godot 4.4 requires the Android 34 platform, Build Tools 34.0.0, NDK 23.2.8568313, and CMake 3.10.2.4988404. The workflow now installs those documented SDK components before export.
 - **APK integrity, package metadata, and arm64 library inspection:** not yet passed.
 - **Emulator/physical-device testing:** not yet performed.
 
-[Run #20](https://github.com/kage049754/Cgame/actions/runs/43211136898)
+[Run #21 logs](https://github.com/kage049754/Cgame/actions/runs/43211310272)
 
 ## Development principles
 
@@ -54,7 +54,7 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Android build
 
-GitHub Actions installs the matching Godot 4.4.1 export templates, configures Android SDK/JDK paths and a temporary debug keystore, and exports an arm64 debug APK. It checks ZIP integrity, package metadata, and the arm64 native library before uploading the APK artifact.
+GitHub Actions installs the Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. It exports an arm64 debug APK, then checks ZIP integrity, package metadata, and the arm64 native library before uploading the artifact.
 
 ## License and assets
 
