@@ -54,7 +54,7 @@ Run #53 passed:
 
 - Workflow includes an x86_64 Pixel 2 emulator install/launch, active-activity check, keyboard activation, process-alive check, screenshot, and AndroidRuntime log scan.
 - Run #57 installed and launched the app and confirmed its process stayed alive for 20 seconds. It failed afterward because the emulator action executes each script line separately and the multi-line shell `if` was split; this is corrected to a single-line condition. The emulator also reported an ANR in the Android phone service under high CPU pressure, not in the game process.
-- The next emulator run also captures a UIAutomator accessibility hierarchy so the AccessKit-exposed names can be inspected. Screenshot, hierarchy, activity dump, and crash logs are uploaded even when a later assertion fails.
+- Emulator run also collects Android `gfxinfo` frame statistics and `meminfo` process memory after the initial gameplay interaction. Screenshot, accessibility hierarchy, activity dump, performance snapshots, and crash logs are uploaded even when a later assertion fails.
 
 ## Not yet verified
 
