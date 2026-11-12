@@ -36,6 +36,7 @@ jobs:
           test -f scripts/progression.gd
           test -f scripts/controller_input.gd
           test -f scripts/accessibility_layout.gd
+          test -f assets/icon.svg
           test -f tests/settings_test.gd
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb
@@ -150,11 +151,15 @@ jobs:
           file build/Survival21.exe | grep -E 'PE32\+.*x86-64|PE32\+ executable'
       - name: Export x86_64 Android emulator APK
         run: |
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PATH="$HOME/.android/debug.keystore"
+          export GODOT_ANDROID_KEYSTORE_DEBUG_USER="androiddebugkey"
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD="android"
           godot --headless --verbose --path . --export-debug "Android Emulator x86_64" build/Survival21-Emulator.apk
           test -s build/Survival21-Emulator.apk
           unzip -t build/Survival21-Emulator.apk
           unzip -l build/Survival21-Emulator.apk | grep -E 'lib/x86_64/.*\\.so'
           AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort | tail -n 1)"
+          test -n "$AAPT"
           "$AAPT" dump badging build/Survival21-Emulator.apk | tee /tmp/emulator-badging.txt
           grep -F "package: name='com.kage049754.survival21'" /tmp/emulator-badging.txt
           grep -F "native-code: 'x86_64'" /tmp/emulator-badging.txt

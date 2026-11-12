@@ -60,7 +60,7 @@ godot --headless --path . --script res://tests/settings_test.gd
 
 ## Android build
 
-GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK for phones, an x86_64 Android APK for emulator smoke tests, and a Windows x86_64 desktop executable. It checks APK ZIP integrity, package metadata, and native libraries before uploading both artifacts.
+GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK for phones, an x86_64 Android APK for emulator smoke tests, and a Windows x86_64 desktop executable. The workflow installs and launches the x86_64 APK on a Pixel 2 Android emulator. It checks APK ZIP integrity, package metadata, and native libraries before uploading both artifacts.
 
 ## License and assets
 
