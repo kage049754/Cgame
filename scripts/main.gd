@@ -322,7 +322,7 @@ func _build_ui() -> void:
 	settings_panel.offset_top = -115
 	settings_panel.offset_bottom = 115
 	settings_panel.visible = false
-	ui.add_child(settings_panel)
+	layer.add_child(settings_panel)
 	var settings_column := VBoxContainer.new()
 	settings_panel.add_child(settings_column)
 	var settings_title := Label.new()

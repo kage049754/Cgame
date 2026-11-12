@@ -58,7 +58,13 @@ jobs:
       - name: Verify Quaternius zombie animations
         run: godot --headless --path . --script res://tests/zombie_animation_test.gd
       - name: Headless scene smoke test
-        run: timeout 20s godot --headless --path . --quit-after 5
+        run: |
+          set -o pipefail
+          timeout 20s godot --headless --path . --quit-after 5 2>&1 | tee /tmp/main-scene.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed to load script" /tmp/main-scene.log; then
+            echo "Main scene emitted a script parse/load error."
+            exit 1
+          fi
 
   android-debug-apk:
     name: Android arm64 debug APK
@@ -72,7 +78,7 @@ jobs:
       - name: Install download utilities
         run: |
           apt-get update -qq
-          apt-get install -y -qq curl unzip file
+          apt-get install -y -qq curl unzip file file
       - name: Install required Android SDK components
         run: |
           SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
