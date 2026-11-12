@@ -23,12 +23,11 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Gameplay, event settlement, opponent AI, progression unlocks, save migration, audio generation, zombie animation playback, keyboard/gamepad mappings, and main-scene smoke test:** passed in [run #45](https://github.com/kage049754/Cgame/actions/runs/43217230158).
-- **UI scale and high-contrast options:** run #47 exposed invalid scaling/theme properties on Godot Window and CanvasLayer nodes. The UI now applies scale to Control nodes and theme overrides to Control containers; pending CI verification.
-- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #45. The latest accessibility changes are not yet in that APK. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
-- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #45. The latest accessibility changes are not yet in that executable. The game data is embedded in the executable.
-- **Artifact downloads:** available from run #45; see `BUILD_VERIFICATION.md` for sizes and checksums.
-- **Physical Android device, emulator, and Windows runtime playtesting:** not yet performed. Automated build and static artifact checks do not prove runtime behavior on those devices.
+- **Gameplay, encounter settlement, opponent AI, progression, save migration, gamepad mappings, audio/settings, UI scale and high-contrast settings, reactive zombie animations, and main-scene smoke test:** passed in [run #51](https://github.com/kage049754/Cgame/actions/runs/43218673836).
+- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #51. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
+- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #51. The game data is embedded in the executable.
+- **Artifact downloads:** available from run #51; see `BUILD_VERIFICATION.md` for sizes and checksums.
+- **Physical Android device, emulator, Windows runtime, and real gamepad playtesting:** not yet performed. Automated build and static artifact checks do not prove runtime behavior on those devices.
 
 ## Roadmap
 
@@ -37,12 +36,12 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Opponent personalities and encounter-specific dealer behavior.
 - [x] Survival health, progression, medkit, and tactical items.
 - [x] Completed-round save/load and run restart.
-- [x] Six encounter events with distinct payout, dealer, and bust modifiers.
-- [x] Quaternius dealer, zombie, and environment models; reactive zombie animation playback tests.
+- [x] Six encounter events with distinct payout, dealer, and bust modifiers; outcome-reactive zombie animation playback tests.
+- [x] Quaternius dealer, zombie, and environment models.
 - [x] Procedural horror ambience and core sound effects.
 - [x] Keyboard, gamepad, and touchscreen controls; focus order and Escape dismissal.
 - [x] Audio volume settings and persistence.
-- [x] Six encounter events and outcome-reactive zombie behavior.
+- [x] Outcome-reactive zombie behavior and animation tests.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
 - [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [ ] Verify TalkBack/screen-reader behavior, performance, and physical-device input.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.
