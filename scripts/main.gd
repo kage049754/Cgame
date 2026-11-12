@@ -15,6 +15,10 @@ var status_label: Label
 var player_label: Label
 var dealer_label: Label
 var chips_label: Label
+var survival_label: Label
+var opponent_label: Label
+var medkit_button: Button
+var survival := SurvivalRun.new()
 var hit_button: Button
 var stand_button: Button
 var deal_button: Button
@@ -107,6 +111,10 @@ func _build_ui() -> void:
 	column.add_child(player_label)
 	chips_label = Label.new()
 	column.add_child(chips_label)
+	opponent_label = Label.new()
+	column.add_child(opponent_label)
+	survival_label = Label.new()
+	column.add_child(survival_label)
 
 	var actions := HBoxContainer.new()
 	column.add_child(actions)
@@ -118,6 +126,8 @@ func _build_ui() -> void:
 	actions.add_child(double_button)
 	deal_button = _make_button("NEXT HAND", _on_next_hand)
 	actions.add_child(deal_button)
+	medkit_button = _make_button("MEDKIT (75)", _on_medkit)
+	column.add_child(medkit_button)
 
 	var hint := Label.new()
 	hint.text = "Beat the dealer. Don't go over 21."
@@ -143,7 +153,11 @@ func _draw_card(hand: Array[Dictionary]) -> void:
 		_create_deck()
 	hand.append(deck.pop_back())
 
-func _new_round() -> void:
+	func _new_round() -> void:
+	if survival.finished:
+		status_label.text = "The run has ended. Restart to enter the table again."
+		_update_ui()
+		return
 	if chips <= 0:
 		status_label.text = "You're out of chips. Restart the game to try again."
 		_update_ui()
@@ -199,14 +213,21 @@ func _on_double() -> void:
 	_render_cards()
 
 func _on_next_hand() -> void:
-	if not round_active:
+	if not round_active and not survival.finished:
 		_new_round()
+
+func _on_medkit() -> void:
+	if survival.use_medkit(chips):
+		chips -= 75
+		status_label.text = "Medkit used. One heart restored."
+		_update_ui()
 
 func _finish_round() -> void:
 	if not round_active:
 		return
 	round_active = false
 	var result := Rules.outcome(player_hand, dealer_hand)
+	survival.resolve_hand(result)
 	if Rules.is_blackjack(player_hand) and result == "win":
 		chips += int(round(float(current_bet) * 2.5))
 		status_label.text = "BLACKJACK! You win 3:2."
@@ -218,6 +239,10 @@ func _finish_round() -> void:
 		status_label.text = "Push. Your bet is returned."
 	else:
 		status_label.text = "You lost this hand."
+	if survival.ending == "victory":
+		status_label.text = "THE HOUSE IS BROKEN. YOU SURVIVED."
+	elif survival.ending == "defeat":
+		status_label.text = "YOUR LAST HEART FADES. THE HOUSE WINS."
 	_update_ui()
 
 func _render_cards() -> void:
@@ -252,7 +277,10 @@ func _update_ui() -> void:
 	dealer_label.text = "DEALER  %s  |  %d cards" % [dealer_value, dealer_hand.size()]
 	player_label.text = "YOU  %d  |  %d cards  |  Bet: %d" % [Rules.hand_value(player_hand), player_hand.size(), current_bet]
 	chips_label.text = "CHIPS  %d" % chips
+	opponent_label.text = "OPPONENT  %s" % survival.opponent_name()
+	survival_label.text = "HEARTS  %s   |   WINS  %d / %d   |   LOSSES  %d" % ["♥".repeat(survival.health) + "♡".repeat(SurvivalRun.MAX_HEALTH - survival.health), survival.wins, SurvivalRun.REQUIRED_WINS, survival.losses]
 	hit_button.disabled = not round_active
 	stand_button.disabled = not round_active
 	double_button.disabled = not round_active or player_hand.size() != 2 or chips < current_bet
-	deal_button.disabled = round_active or chips <= 0
+	deal_button.disabled = round_active or chips <= 0 or survival.finished
+	medkit_button.disabled = survival.finished or survival.medkit_used or survival.health >= SurvivalRun.MAX_HEALTH or chips < 75
