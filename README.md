@@ -23,10 +23,10 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Gameplay, encounter settlement, opponent AI, progression, save migration, gamepad mappings, audio/settings, UI scale and high-contrast settings, reactive zombie animations, and main-scene smoke test:** passed in [run #51](https://github.com/kage049754/Cgame/actions/runs/43218673836).
-- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #51. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
-- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #51. The game data is embedded in the executable.
-- **Artifact downloads:** available from run #51; see `BUILD_VERIFICATION.md` for sizes and checksums.
+- **Gameplay, event settlement, opponent AI, progression unlocks, save migration, gamepad mappings, audio/settings, UI scale and high-contrast settings, responsive viewport scaling, reactive zombie animations, and main-scene smoke test:** passed in [run #53](https://github.com/kage049754/Cgame/actions/runs/43219550160).
+- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #53. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
+- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #53. The game data is embedded in the executable.
+- **Artifact downloads:** available from run #53; see `BUILD_VERIFICATION.md` for sizes and checksums.
 - **Physical Android device, emulator, Windows runtime, and real gamepad playtesting:** not yet performed. Automated build and static artifact checks do not prove runtime behavior on those devices.
 
 ## Roadmap
@@ -44,7 +44,8 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Outcome-reactive zombie behavior and animation tests.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
 - [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [ ] Verify TalkBack/screen-reader behavior, performance, and physical-device input.
-- [ ] Android and desktop release builds, emulator/device QA, and release documentation.
+- [ ] Godot engine upgrade for full screen-reader accessibility support, then verify TalkBack/NVDA focus and live announcements.
+- [ ] Performance profiling, physical-device QA, production signing, and release packaging.
 
 ## Running locally
 
