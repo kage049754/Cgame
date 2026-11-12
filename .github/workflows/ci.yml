@@ -33,6 +33,10 @@ jobs:
           test -f scenes/dealer_character.tscn
           test -f assets/characters/quaternius_superhero_male.glb
           test -f assets/enemies/quaternius_zombie_basic.gltf
+          test -f assets/environment/street_4way.gltf
+          test -f assets/environment/streetlights.gltf
+          test -f assets/environment/container_red.gltf
+          test -f assets/environment/container_green.gltf
           test -f scripts/zombie_enemy.gd
           test -f tests/zombie_animation_test.gd
           test -f scenes/zombie_enemy.tscn

@@ -4,6 +4,10 @@ const Rules = preload("res://scripts/blackjack_rules.gd")
 const Opponents = preload("res://scripts/opponent_profiles.gd")
 const DealerCharacterScene = preload("res://scenes/dealer_character.tscn")
 const ZombieEnemyScene = preload("res://scenes/zombie_enemy.tscn")
+const StreetTileScene = preload("res://assets/environment/street_4way.gltf")
+const StreetLightsScene = preload("res://assets/environment/streetlights.gltf")
+const RedContainerScene = preload("res://assets/environment/container_red.gltf")
+const GreenContainerScene = preload("res://assets/environment/container_green.gltf")
 const SurvivalItemsState = preload("res://scripts/survival_items.gd")
 const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
@@ -111,6 +115,43 @@ func _build_table() -> void:
 	floor_mesh.position = Vector3(0, -0.75, 0)
 	floor_mesh.material_override = _material(Color(0.035, 0.045, 0.05), 0.85)
 	add_child(floor_mesh)
+	var street_tile := StreetTileScene.instantiate()
+	street_tile.position = Vector3(0, -0.75, 0)
+	street_tile.scale = Vector3(2.0, 1.0, 1.7)
+	add_child(street_tile)
+
+	var pedestal_mesh := MeshInstance3D.new()
+	var pedestal := CylinderMesh.new()
+	pedestal.top_radius = 1.5
+	pedestal.bottom_radius = 1.8
+	pedestal.height = 0.3
+	pedestal_mesh.mesh = pedestal
+	pedestal_mesh.position.y = -0.4
+	pedestal_mesh.material_override = _material(Color(0.055, 0.065, 0.07), 0.8)
+	add_child(pedestal_mesh)
+
+	var red_container := RedContainerScene.instantiate()
+	red_container.position = Vector3(7.0, -0.55, 1.4)
+	red_container.scale = Vector3.ONE * 0.68
+	add_child(red_container)
+
+	var green_container := GreenContainerScene.instantiate()
+	green_container.position = Vector3(-7.0, -0.55, 1.4)
+	green_container.scale = Vector3.ONE * 0.68
+	green_container.rotation_degrees.y = 180
+	add_child(green_container)
+
+	for side in [-1.0, 1.0]:
+		var streetlight := StreetLightsScene.instantiate()
+		streetlight.position = Vector3(side * 7.0, -0.55, -5.5)
+		streetlight.scale = Vector3.ONE * 0.9
+		add_child(streetlight)
+		var lamp := OmniLight3D.new()
+		lamp.position = Vector3(side * 7.0, 4.5, -5.5)
+		lamp.light_color = Color(1.0, 0.55, 0.28)
+		lamp.light_energy = 1.6
+		lamp.omni_range = 10.0
+		add_child(lamp)
 
 	var table_mesh := MeshInstance3D.new()
 	var table := CylinderMesh.new()
@@ -136,10 +177,10 @@ func _build_table() -> void:
 	cards_root.name = "Cards"
 	add_child(cards_root)
 	var dealer_character := DealerCharacterScene.instantiate()
-	dealer_character.position = Vector3(0, -0.75, -4.05)
+	dealer_character.position = Vector3(0, -0.55, -4.05)
 	add_child(dealer_character)
 	zombie_character = ZombieEnemyScene.instantiate() as Node3D
-	zombie_character.position = Vector3(-4.05, -0.75, -1.65)
+	zombie_character.position = Vector3(-4.05, -0.55, -1.65)
 	zombie_character.scale = Vector3.ONE * 0.82
 	add_child(zombie_character)
 

@@ -1,51 +1,46 @@
 # SURVIVAL 21
 
-A standalone 3D horror-survival blackjack game for Android and desktop, built with Godot 4. This is an original project inspired by the survival-card-game genre; all game code, presentation, and story content are original.
+A standalone 3D horror-survival blackjack game for Android and desktop, built with Godot 4. All game code, presentation, and story content are original.
 
 ## Current implementation
 
-- Procedural 3D blackjack table and 3D card visuals.
+- Procedural 3D blackjack table, 3D cards, and a support pedestal.
+- Post-apocalyptic arena dressing using Quaternius street-intersection, streetlight, and shipping-container models, with warm point lights.
 - Blackjack rules with ace handling, natural blackjack priority, busts, and dealer resolution.
 - Hit, Stand, Double, and Next Hand actions.
 - Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
-- Survival run with three hearts, five wins to escape, loss tracking, opponent progression, and a one-use 75-chip medkit.
+- Survival run with three hearts, five wins to escape, opponent progression, and a one-use 75-chip medkit.
 - Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
 - Encounter events: Restless Dealer forces soft-17 draws, House Favor adds chips on a push, and Blood Toll deducts extra chips after a loss.
-- Run-end and empty-chip restart control; completed-round save/load for chips, health, progression, and item counts.
-- Quaternius Superhero Male humanoid model integrated as a dark dealer silhouette with red-eye treatment.
-- Quaternius Zombie Basic model integrated as an animated background threat, with Idle/Idle_Attack animation switching on encounter events.
-- Original CC0 license notices and source provenance included for both models.
-- Automated blackjack, survival progression, soft-hand, opponent AI, tactical-item, encounter-event, save/load, and Quaternius zombie animation playback tests.
-- Godot 4.4.1 headless scene smoke test.
+- Run-end restart and completed-round save/load for chips, health, progression, and item counts.
+- Quaternius Superhero Male as a dark dealer silhouette with red-eye treatment.
+- Quaternius Zombie Basic as an animated threat, with Idle and Idle_Attack playback verified in CI.
+- CC0 license notices and source provenance for all imported Quaternius models.
+- Automated blackjack, survival, opponent AI, item, encounter-event, save/load, and zombie animation tests.
 
 ## Verification status
 
-- **Core blackjack, opponent, tactical-item, save/load, and scene tests:** passed in run #26 before encounter-event and zombie-scene integration.
-- **Encounter-event rules:** added in commit `637b2f5`; run #28 is testing them.
-- **Zombie asset and animation integration:** imported in run #29; explicit Idle and Idle_Attack playback verification is added in the next CI run.
-- **Android APK export:** the project enables ETC2/ASTC texture import and the workflow installs the matching Android SDK, NDK, CMake, and export templates. APK export is pending run #27/#28.
-- **APK integrity, package metadata, arm64 library inspection, and device testing:** not yet passed.
+- **Gameplay, item, save/load, and encounter-event tests:** passed in run #28.
+- **Zombie Basic scene import and main-scene smoke test:** passed in run #29.
+- **Zombie Idle and Idle_Attack animation playback:** passed in run #30.
+- **Android arm64 APK export:** passed in run #29 for commit `493bd5f`; APK integrity, package identifier, and arm64 libraries verified. The APK from that run does not yet include the environment prop additions below.
+- **Latest environment props:** added after run #29; awaiting the next scene import and Android build.
+- **Emulator/physical-device testing:** not yet performed.
 
-[Run #26 gameplay tests](https://github.com/kage049754/Cgame/actions/runs/43212237303)
-
-## Development principles
-
-- Godot 4 and GDScript; one shared codebase for Android and desktop.
-- Offline single-player first. No real-money wagering, cash-out, or gambling payments.
-- Gameplay rules are separated from presentation and covered by automated tests.
-- Do not call a release complete until APK integrity, architecture, install/runtime behavior, and device QA are checked.
+[Run #29 Android APK](https://github.com/kage049754/Cgame/actions/runs/43213052304)
 
 ## Roadmap
 
 - [x] Core blackjack rules and automated tests.
 - [x] 3D table, cards, dealing, and player controls.
 - [x] Opponent personalities and encounter-specific dealer behavior.
-- [x] Initial survival health, win progression, medkit, and tactical items.
+- [x] Survival health, progression, medkit, and tactical items.
 - [x] Completed-round save/load and run restart.
-- [x] First encounter events (tests pending).
-- [ ] More encounter events and item variety.
-- [ ] Horror environments, enemy characters, audio, animations, and visual effects.
+- [x] Initial encounter events.
+- [x] Quaternius dealer, zombie, and environment models; zombie animation playback.
+- [ ] More varied encounter events and enemy behaviors.
+- [ ] Audio, music, ambient effects, and polished animations.
 - [ ] Progression, unlockables, settings, and save migration.
 - [ ] Android and desktop input adaptation, performance, and accessibility.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.
@@ -56,11 +51,12 @@ Install Godot 4.4.1, import `project.godot`, then run the main scene. To run aut
 
 ```sh
 godot --headless --path . --script res://tests/run_tests.gd
+godot --headless --path . --script res://tests/zombie_animation_test.gd
 ```
 
 ## Android build
 
-GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK, then checks ZIP integrity, package metadata, and the arm64 native library before uploading the artifact.
+GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. It enables ETC2/ASTC texture import and exports an arm64 debug APK. The workflow verifies ZIP integrity, package metadata, and native libraries before uploading the artifact.
 
 ## License and assets
 
