@@ -14,7 +14,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - Tactical items: Marked Card reveals the dealer's hidden card once per run; House Bell prevents dealer draws for one hand, including after a Double action.
 - Encounter events: Restless Dealer forces soft-17 draws, House Favor rewards pushes, Blood Toll taxes losses, Whispering Table rewards wins, Rust Storm taxes player busts, and Dealer's Debt rewards dealer busts.
 - Run-end restart and completed-round save/load for chips, health, progression, and item counts.
-- Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic as an animated threat with Idle and Idle_Attack playback.
+- Quaternius Superhero Male as a dark dealer silhouette; Quaternius Zombie Basic reacts to encounter events and round outcomes with Idle, Idle_Attack, HitReact, Punch, and Death animations.
 - Original procedural horror ambience and synthesized card, win, loss, and item sound effects.
 - In-game settings for ambience/effects volume, UI scaling (80%–130%), and high-contrast text; preferences persist.
 - Persistent six-entry survival archive with lifetime statistics, lore unlocks, and achievement tracking across runs.
@@ -38,11 +38,11 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Survival health, progression, medkit, and tactical items.
 - [x] Completed-round save/load and run restart.
 - [x] Six encounter events with distinct payout, dealer, and bust modifiers.
-- [x] Quaternius dealer, zombie, and environment models; zombie animation playback.
+- [x] Quaternius dealer, zombie, and environment models; reactive zombie animation playback tests.
 - [x] Procedural horror ambience and core sound effects.
 - [x] Keyboard, gamepad, and touchscreen controls; focus order and Escape dismissal.
 - [x] Audio volume settings and persistence.
-- [ ] More varied encounter events and enemy behaviors.
+- [x] Six encounter events and outcome-reactive zombie behavior.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
 - [ ] Verify TalkBack/screen-reader behavior, additional aspect ratios, performance, and physical-device input.
 - [ ] Android and desktop release builds, emulator/device QA, and release documentation.

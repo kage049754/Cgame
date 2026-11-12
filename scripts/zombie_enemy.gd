@@ -15,6 +15,17 @@ func _ready() -> void:
 	animation_player = players[0] as AnimationPlayer
 	play_animation("Idle")
 
+func play_outcome(result: String, run_ending: String) -> void:
+	match result:
+		"win":
+			play_animation("Death" if run_ending == "victory" else "HitReact")
+		"lose":
+			play_animation("Punch")
+		"push":
+			play_animation("Idle_Attack")
+		_:
+			play_animation("Idle")
+
 func play_animation(animation_name: String) -> void:
 	if animation_player == null:
 		return

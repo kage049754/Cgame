@@ -588,6 +588,8 @@ func _finish_round() -> void:
 	var opponent_name := str(Opponents.profile_for_wins(survival.wins).get("name", "UNKNOWN"))
 	var result := Rules.outcome(player_hand, dealer_hand)
 	survival.resolve_hand(result)
+	if zombie_character != null:
+		zombie_character.call("play_outcome", result, survival.ending)
 	if audio_system != null:
 		if result == "win":
 			audio_system.call("play_win")

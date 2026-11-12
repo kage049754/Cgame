@@ -98,3 +98,9 @@ All game buttons are keyboard-focusable and expose tooltips.
 - All primary actions remain labeled, keyboard-focusable, and have tooltips.
 - Escape closes the settings or archive dialog.
 - UI scale and contrast preferences persist independently from run progress.
+
+## Reactive enemy animations
+
+- The zombie switches to Idle_Attack during Restless Dealer encounters.
+- After a hand, it reacts with HitReact after a player win, Punch after a loss, and Idle_Attack after a push.
+- Completing a run triggers the zombie Death animation.
