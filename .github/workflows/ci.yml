@@ -42,12 +42,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Import project
-        run: godot --headless --editor --path . --quit
-      - name: Verify Android export toolchain
+      - name: Install matching Godot Android export templates
         run: |
+          GODOT_VERSION="4.4.1"
+          TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$TEMPLATE_DIR" /tmp/godot-templates
+          curl -fL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -o /tmp/godot-templates/templates.tpz
+          unzip -q /tmp/godot-templates/templates.tpz -d /tmp/godot-templates/unpacked
+          cp -a /tmp/godot-templates/unpacked/templates/. "$TEMPLATE_DIR/"
+      - name: Configure Android SDK paths
+        run: |
+          JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
+          mkdir -p "$HOME/.config/godot"
+          cat > "$HOME/.config/godot/editor_settings-4.4.tres" <<EOF
+          [gd_resource type="EditorSettings" format=3]
+          [resource]
+          export/android/java_sdk_path = "$JAVA_HOME"
+          export/android/android_sdk_path = "$ANDROID_HOME"
+          EOF
+          test -d "$JAVA_HOME"
           test -d "$ANDROID_HOME"
           java -version
+      - name: Import project
+        run: godot --headless --editor --path . --quit
       - name: Export and verify Android APK
         run: |
           mkdir -p build
