@@ -385,9 +385,11 @@ func _build_ui() -> void:
 	column.add_child(chips_label)
 	opponent_label = Label.new()
 	opponent_label.accessibility_name = "Current opponent"
+	opponent_label.accessibility_description = "The dealer personality and its blackjack strategy."
 	column.add_child(opponent_label)
 	event_label = Label.new()
 	event_label.accessibility_name = "Current table event"
+	event_label.accessibility_description = "The special rule active for this blackjack hand."
 	column.add_child(event_label)
 	survival_label = Label.new()
 	survival_label.accessibility_name = "Survival progress"
@@ -520,6 +522,10 @@ func _button_accessibility_description(caption: String) -> String:
 			return "Start the next blackjack hand."
 		"MEDKIT (75)":
 			return "Spend seventy five virtual chips to restore one heart. Usable once per run."
+		"MARKED (1)":
+			return "Reveal the dealer’s hidden card for this hand. One use per run."
+		"BELL (1)":
+			return "Prevent the dealer from drawing for this hand. One use per run."
 		"SETTINGS":
 			return "Open audio volume, interface scale, and high contrast options."
 		"ARCHIVE (0/6)":
@@ -758,13 +764,13 @@ func _update_ui() -> void:
 	bell_button.disabled = not round_active or items.house_bells <= 0 or house_bell_active
 	restart_button.visible = not round_active and (survival.finished or chips <= 0)
 	archive_button.text = "ARCHIVE (%d/6)" % progression.unlocked_count()
-	status_label.accessibility_name = status_label.text
-	dealer_label.accessibility_name = dealer_label.text
-	player_label.accessibility_name = player_label.text
-	chips_label.accessibility_name = chips_label.text
-	opponent_label.accessibility_name = opponent_label.text
-	event_label.accessibility_name = event_label.text
-	survival_label.accessibility_name = survival_label.text
+	status_label.accessibility_name = "Game status: " + status_label.text
+	dealer_label.accessibility_name = "Dealer hand: " + dealer_label.text
+	player_label.accessibility_name = "Your hand: " + player_label.text
+	chips_label.accessibility_name = "Chips: " + chips_label.text
+	opponent_label.accessibility_name = "Current opponent: " + opponent_label.text
+	event_label.accessibility_name = "Current table event: " + event_label.text
+	survival_label.accessibility_name = "Survival progress: " + survival_label.text
 	medkit_button.accessibility_name = "Medkit, 75 chips, " + ("already used" if survival.medkit_used else "available")
 	marked_button.accessibility_name = "Marked Card, %d uses remaining" % items.marked_cards
 	bell_button.accessibility_name = "House Bell, %s" % ("active" if house_bell_active else "%d uses remaining" % items.house_bells)
