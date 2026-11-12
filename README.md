@@ -23,10 +23,10 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Verification status
 
-- **Gameplay, event settlement, opponent AI, progression unlocks, save migration, settings persistence, audio generation, zombie animation playback, and main-scene smoke test:** all passed in [run #44](https://github.com/kage049754/Cgame/actions/runs/43216815391).
-- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #44. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
-- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #44. The game data is embedded in the executable.
-- **Artifact downloads:** available from run #44; see `BUILD_VERIFICATION.md` for sizes and checksums.
+- **Gameplay, event settlement, opponent AI, progression unlocks, save migration, settings persistence, audio generation, zombie animation playback, keyboard/gamepad mappings, and main-scene smoke test:** all passed in [run #45](https://github.com/kage049754/Cgame/actions/runs/43217230158).
+- **Android arm64 debug APK:** exported, ZIP-tested, signed with the CI debug keystore, and verified with Android `aapt` in run #45. Package `com.kage049754.survival21`, version `0.1.0`, ABI `arm64-v8a`.
+- **Windows x86_64 desktop executable:** exported and verified as PE32+ x86-64 in run #45. The game data is embedded in the executable.
+- **Artifact downloads:** available from run #45; see `BUILD_VERIFICATION.md` for sizes and checksums.
 - **Physical Android device, emulator, and Windows runtime playtesting:** not yet performed. Automated build and static artifact checks do not prove runtime behavior on those devices.
 
 ## Roadmap
@@ -39,7 +39,8 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Six encounter events with distinct payout, dealer, and bust modifiers.
 - [x] Quaternius dealer, zombie, and environment models; zombie animation playback.
 - [x] Procedural horror ambience and core sound effects.
-- [x] Keyboard, gamepad, and touchscreen controls; focus order and Escape dismissal.\n- [x] Audio volume settings and persistence.
+- [x] Keyboard, gamepad, and touchscreen controls; focus order and Escape dismissal.
+- [x] Audio volume settings and persistence.
 - [ ] More varied encounter events and enemy behaviors.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
 - [ ] Verify TalkBack/screen-reader behavior, additional aspect ratios, performance, and physical-device input.
