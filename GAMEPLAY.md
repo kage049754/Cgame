@@ -106,3 +106,9 @@ All game buttons are keyboard-focusable and expose tooltips.
 - Completing a run triggers the zombie Death animation.
 
 - The interface automatically scales down to fit smaller viewport sizes and reflows the archive dialog bounds when the window changes size.
+
+## Screen reader support
+
+- Engine upgraded to Godot 4.7.2, which includes AccessKit integration.
+- Accessible names, descriptions, focus order, and live announcements are being added to the gameplay controls and status labels.
+- Screen-reader behavior still requires validation with TalkBack on Android and NVDA on Windows; CI cannot substitute for those interactive assistive-technology tests.

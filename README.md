@@ -44,12 +44,12 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 - [x] Outcome-reactive zombie behavior and animation tests.
 - [x] Persistent archive achievements and version 1-to-2 save migration.
 - [x] Responsive UI fit scaling and viewport resize handling, covered by layout tests.\n- [ ] Verify TalkBack/screen-reader behavior, performance, and physical-device input.
-- [ ] Godot engine upgrade for full screen-reader accessibility support, then verify TalkBack/NVDA focus and live announcements.
+- [x] Upgrade to Godot 4.7.2 to enable AccessKit-based screen-reader support; add accessible names, descriptions, and live announcements, then verify TalkBack/NVDA.
 - [ ] Performance profiling, physical-device QA, production signing, and release packaging.
 
 ## Running locally
 
-Install Godot 4.4.1, import `project.godot`, then run the main scene. Automated checks:
+Install Godot 4.7.2, import `project.godot`, then run the main scene. Automated checks:
 
 ```sh
 godot --headless --path . --script res://tests/run_tests.gd
@@ -60,7 +60,7 @@ godot --headless --path . --script res://tests/settings_test.gd
 
 ## Android build
 
-GitHub Actions installs Godot 4.4.1 export templates, Android Platform 34, Build Tools 34.0.0, NDK 23.2.8568313, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK for phones, an x86_64 Android APK for emulator smoke tests, and a Windows x86_64 desktop executable. The workflow installs and launches the x86_64 APK on a Pixel 2 Android emulator. It checks APK ZIP integrity, package metadata, and native libraries before uploading both artifacts.
+GitHub Actions installs Godot 4.7.2 export templates, Android Platform 35, Build Tools 35.0.1, NDK 28.1.13356709, CMake 3.10.2.4988404, and Java 17. The project enables ETC2/ASTC texture import. The workflow exports an arm64 debug APK for phones, an x86_64 Android APK for emulator smoke tests, and a Windows x86_64 desktop executable. The workflow installs and launches the x86_64 APK on a Pixel 2 Android emulator. It checks APK ZIP integrity, package metadata, and native libraries before uploading both artifacts.
 
 ## License and assets
 

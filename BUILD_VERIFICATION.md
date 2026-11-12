@@ -17,7 +17,7 @@
 - Package: `com.kage049754.survival21`
 - Version: `0.1.0` (version code 1)
 - ABI: `arm64-v8a`
-- Android platform / compile SDK: 34
+- Android platform / compile SDK: 35
 - APK ZIP integrity: passed
 - APK signing and signature verification: passed with the CI debug keystore
 - Android package metadata: verified using `aapt dump badging`
@@ -62,4 +62,10 @@ Run #53 passed:
 
 ## Engine support note
 
-The project still uses Godot 4.4.1 at this build. Godot 4.4 is end-of-life, and the 4.5 series introduced built-in AccessKit-based screen-reader support with accessibility names and descriptions. The next milestone upgrades to the current supported 4.7.2 stable release before implementing screen-reader labels and live status announcements.
+The project still uses Godot 4.7.2 at this build. Godot 4.4 is end-of-life, and the 4.5 series introduced built-in AccessKit-based screen-reader support with accessibility names and descriptions. The next milestone upgrades to the current supported 4.7.2 stable release before implementing screen-reader labels and live status announcements.
+
+## Engine upgrade
+
+- Godot engine and export templates upgraded to 4.7.2 stable.
+- Android SDK baseline upgraded to Platform 35, Build Tools 35.0.1, and NDK 28.1.13356709 as required by the Godot 4.7 export documentation.
+- AccessKit-based screen-reader integration is available in this engine line; project-level accessible labels and live announcements are the next implementation step.
