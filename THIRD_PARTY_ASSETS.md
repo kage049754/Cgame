@@ -1,24 +1,17 @@
 # Third-party assets and licenses
 
-## Current project assets
+## Imported assets
 
-The current prototype uses procedural meshes and generated card labels. No third-party model, texture, audio, or font files have been committed yet.
+None yet. The current game still uses procedural meshes and generated card labels. The packs below have been checked as suitable candidates; the repository does not currently contain their model files.
 
-## Approved source and candidate packs
+## Quaternius candidates
 
-- **Quaternius Zombie Apocalypse Kit** — candidate for enemy characters and environmental props. The pack page identifies the pack as CC0 and says it is free for personal and commercial projects. Source: https://quaternius.com/packs/zombieapocalypsekit.html
-- **Quaternius Ultimate House Interior Pack** — candidate for casino/interior dressing. Verify the individual pack page's current license before downloading or committing.
-- **Quaternius Universal Base Characters / Universal Animation Library** — candidate for rigged opponent characters and reusable locomotion/idle animations. Verify the exact pack page and downloaded archive license before use.
+- **Zombie Apocalypse Kit** — 4 playable characters, 4 enemies, 2 dogs, and environmental/vehicle models. The official pack page identifies it as CC0 and allows commercial use. https://quaternius.com/packs/zombieapocalypsekit.html
+- **Universal Base Characters** — six rigged humanoid base models, with a humanoid rig and glTF formats. The official page identifies the pack as CC0 and allows commercial use. https://quaternius.com/packs/universalbasecharacters.html
+- **Universal Animation Library** — 120+ retargetable humanoid animations for Godot, Unity, and Unreal. The official page identifies it as CC0 and allows commercial use. https://quaternius.com/packs/universalanimationlibrary.html
 
-Quaternius' current site license is the Quaternius Asset License (QAL) v1.0. It permits free personal, educational, and commercial use and incorporation into products, but prohibits redistributing the assets themselves as standalone asset packs. Older packs may retain a CC0 license; the exact license shown for the specific pack and the version in effect when obtained governs. See https://quaternius.com/license.html and https://quaternius.com/faq.html.
+These specific packs are listed as CC0 on their pack pages. Quaternius' site-wide Quaternius Asset License (QAL) v1.0, updated 2026-08-28, also permits commercial incorporation without attribution but prohibits redistributing the assets as standalone asset packs. Always preserve the exact license attached to the downloaded version. https://quaternius.com/license.html
 
 ## Integration rules
 
-Before an asset is committed, record:
-- Exact asset/pack name and creator
-- Original source/download page
-- Exact license and version shown for that pack
-- Date obtained and any attribution requirements
-- File formats and modifications made
-
-Do not commit paid-only Source-tier files or redistribute asset packs separately. Prefer glTF/GLB for Godot imports where available. Keep the game repository focused on the finished game, not a standalone asset mirror.
+Before committing a downloaded asset, record the exact pack/version, source page, license, date obtained, and any required attribution. Prefer glTF/GLB imports. Do not commit paid-only Source-tier files, and do not redistribute packs separately. Keep asset files limited to what the game actually uses.

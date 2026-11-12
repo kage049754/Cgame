@@ -1,6 +1,7 @@
 extends Node3D
 
 const Rules = preload("res://scripts/blackjack_rules.gd")
+const Opponents = preload("res://scripts/opponent_profiles.gd")
 const STARTING_CHIPS := 500
 const BASE_BET := 25
 
@@ -193,7 +194,7 @@ func _on_hit() -> void:
 func _on_stand() -> void:
 	if not round_active:
 		return
-	while Rules.hand_value(dealer_hand) < 17:
+	while Opponents.should_dealer_hit(dealer_hand, survival.wins):
 		_draw_card(dealer_hand)
 	_finish_round()
 	_update_ui()
@@ -277,7 +278,8 @@ func _update_ui() -> void:
 	dealer_label.text = "DEALER  %s  |  %d cards" % [dealer_value, dealer_hand.size()]
 	player_label.text = "YOU  %d  |  %d cards  |  Bet: %d" % [Rules.hand_value(player_hand), player_hand.size(), current_bet]
 	chips_label.text = "CHIPS  %d" % chips
-	opponent_label.text = "OPPONENT  %s" % survival.opponent_name()
+	var opponent_profile := Opponents.profile_for_wins(survival.wins)
+	opponent_label.text = "OPPONENT  %s — %s" % [opponent_profile.get("name", "UNKNOWN"), opponent_profile.get("tell", "")]
 	survival_label.text = "HEARTS  %s   |   WINS  %d / %d   |   LOSSES  %d" % ["♥".repeat(survival.health) + "♡".repeat(SurvivalRun.MAX_HEALTH - survival.health), survival.wins, SurvivalRun.REQUIRED_WINS, survival.losses]
 	hit_button.disabled = not round_active
 	stand_button.disabled = not round_active

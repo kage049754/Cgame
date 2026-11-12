@@ -25,6 +25,7 @@ jobs:
           test -f scripts/blackjack_rules.gd
           test -f scripts/main.gd
           test -f scripts/survival_run.gd
+          test -f scripts/opponent_profiles.gd
           test -f export_presets.cfg
       - name: Import project
         run: godot --headless --editor --path . --quit

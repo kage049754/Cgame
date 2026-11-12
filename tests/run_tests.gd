@@ -2,12 +2,14 @@ extends SceneTree
 
 const Rules = preload("res://scripts/blackjack_rules.gd")
 const SurvivalRunState = preload("res://scripts/survival_run.gd")
+const Opponents = preload("res://scripts/opponent_profiles.gd")
 
 func _initialize() -> void:
 	_test_values()
 	_test_aces()
 	_test_outcomes()
 	_test_natural_blackjack_priority()
+	_test_soft_hands_and_opponent_profiles()
 	_test_survival_progression()
 	print("All Survival 21 tests passed.")
 	quit()
@@ -34,6 +36,20 @@ func _test_natural_blackjack_priority() -> void:
 	_expect(Rules.outcome(natural, ordinary_21) == "win", "Natural blackjack should beat a three-card 21")
 	_expect(Rules.outcome(ordinary_21, natural) == "lose", "Dealer natural blackjack should beat a three-card 21")
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], natural) == "lose", "Dealer natural blackjack should beat a non-natural player hand")
+
+func _test_soft_hands_and_opponent_profiles() -> void:
+	var soft_seventeen := [{"rank": 1}, {"rank": 6}]
+	var hard_seventeen := [{"rank": 10}, {"rank": 7}]
+	_expect(Rules.is_soft(soft_seventeen), "Ace + 6 should be a soft 17")
+	_expect(not Rules.is_soft(hard_seventeen), "10 + 7 should be a hard 17")
+	_expect(not Rules.is_soft([{"rank": 1}, {"rank": 9}, {"rank": 7}]), "Downgraded ace should not remain soft")
+	_expect(not Opponents.should_dealer_hit(soft_seventeen, 0), "Night Dealer should stand on soft 17")
+	_expect(Opponents.should_dealer_hit(soft_seventeen, 2), "Collector should hit soft 17")
+	_expect(Opponents.should_dealer_hit(hard_seventeen, 4), "The House should draw on hard 17 and stand at 18")
+	_expect(not Opponents.should_dealer_hit(hard_seventeen, 0), "Night Dealer should stand on hard 17")
+	_expect(Opponents.profile_for_wins(0).get("name") == "THE NIGHT DEALER", "First opponent profile should be Night Dealer")
+	_expect(Opponents.profile_for_wins(2).get("name") == "THE COLLECTOR", "Second opponent profile should be Collector")
+	_expect(Opponents.profile_for_wins(4).get("name") == "THE HOUSE", "Final opponent profile should be The House")
 
 func _test_outcomes() -> void:
 	_expect(Rules.outcome([{"rank": 10}, {"rank": 8}], [{"rank": 10}, {"rank": 7}]) == "win", "Higher hand should win")

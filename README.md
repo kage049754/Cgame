@@ -5,23 +5,24 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 ## Current implementation
 
 - Procedural 3D blackjack table and 3D card visuals.
-- Standard blackjack hand evaluation, ace handling, natural blackjack priority, busts, and dealer resolution.
+- Blackjack rules with ace handling, natural blackjack priority, busts, and dealer resolution.
 - Hit, Stand, Double, and Next Hand actions.
-- Virtual chips with wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
-- Survival run with three hearts, five wins to escape, loss tracking, opponent stage labels, and a one-use 75-chip medkit.
-- Automated rule and survival-progression tests.
+- Virtual-chip wager deduction, double-down funding, win/push/loss settlement, and 3:2 natural blackjack payout.
+- Survival run with three hearts, five wins to escape, loss tracking, opponent progression, and a one-use 75-chip medkit.
+- Three dealer personalities with distinct draw rules: Night Dealer stands on soft 17, Collector hits soft 17, and The House draws through 17 and stands on 18.
+- Automated rules, survival progression, soft-hand, and opponent AI tests.
 - Godot 4.4.1 headless scene smoke test.
 
 ## Verification status
 
-- **Godot import and script registration:** passed in GitHub Actions run #10.
-- **Automated gameplay tests:** passed in run #10; log reported `All Survival 21 tests passed.`
-- **Headless main-scene smoke test:** passed in run #10.
-- **Android APK export:** configured in the current workflow; awaiting its first real export result.
+- **Godot import and script registration:** passed in GitHub Actions run #17.
+- **Automated gameplay tests:** passed in run #17; previous run #10 log reported `All Survival 21 tests passed.`
+- **Headless main-scene smoke test:** passed in run #17.
+- **Android APK export:** CI now installs the matching Godot export templates and configures the JDK/Android SDK; the latest export attempt is pending verification.
 - **Emulator/physical-device testing:** not yet performed.
 - **Third-party 3D assets:** not yet imported; candidate packs and license notes are tracked in `THIRD_PARTY_ASSETS.md`.
 
-[Run #10 validation](https://github.com/kage049754/Cgame/actions/runs/43209664348)
+[Run #17](https://github.com/kage049754/Cgame/actions/runs/43210384111)
 
 ## Development principles
 
@@ -35,7 +36,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 - [x] Core blackjack rules and automated tests.
 - [x] 3D table, cards, dealing, and player controls.
-- [ ] Opponent personalities and encounter-specific behavior.
+- [x] Opponent personalities and encounter-specific dealer behavior.
 - [x] Initial survival health, win progression, and medkit.
 - [ ] Additional tactical items and encounter events.
 - [ ] Horror environments, character models, audio, animations, and visual effects.
@@ -45,7 +46,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 
 ## Running locally
 
-Install Godot 4.4.1, import `project.godot`, then run the main scene. To run the automated tests:
+Install Godot 4.4.1, import `project.godot`, then run the main scene. To run automated tests:
 
 ```sh
 godot --headless --path . --script res://tests/run_tests.gd
@@ -53,8 +54,8 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Android build
 
-GitHub Actions exports an arm64 debug APK using the Android preset in `export_presets.cfg`. The APK is published as the `Survival21-Android-arm64-debug` workflow artifact when the export and integrity checks pass.
+GitHub Actions installs Godot 4.4.1 export templates, configures the Android SDK and JDK, and exports an arm64 debug APK using `export_presets.cfg`. The APK is published as the `Survival21-Android-arm64-debug` workflow artifact after export and integrity checks pass.
 
 ## License and assets
 
-Project code will use the MIT License unless otherwise stated. Third-party assets retain their own licenses and attribution requirements; see `THIRD_PARTY_ASSETS.md`.
+Project code will use the MIT License unless otherwise stated. Third-party assets retain their own licenses and attribution requirements; see `THIRD_PARTY_ASSETS.md` and `REUSE_CANDIDATES.md`.

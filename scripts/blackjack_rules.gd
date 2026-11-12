@@ -23,6 +23,23 @@ static func hand_value(cards: Array) -> int:
 static func is_blackjack(cards: Array) -> bool:
 	return cards.size() == 2 and hand_value(cards) == TARGET
 
+static func is_soft(cards: Array) -> bool:
+	var total := 0
+	var high_aces := 0
+	for card in cards:
+		var rank: int = int(card.get("rank", 0))
+		if rank == 1:
+			total += 11
+			high_aces += 1
+		elif rank >= 10:
+			total += 10
+		else:
+			total += rank
+	while total > TARGET and high_aces > 0:
+		total -= 10
+		high_aces -= 1
+	return high_aces > 0
+
 static func is_bust(cards: Array) -> bool:
 	return hand_value(cards) > TARGET
 
