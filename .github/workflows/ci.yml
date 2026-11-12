@@ -58,6 +58,7 @@ jobs:
       - name: Verify Quaternius zombie animations
         run: godot --headless --path . --script res://tests/zombie_animation_test.gd
       - name: Headless scene smoke test
+        shell: bash
         run: |
           timeout 20s godot --headless --path . --quit-after 5 > /tmp/main-scene.log 2>&1
           cat /tmp/main-scene.log

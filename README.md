@@ -24,7 +24,7 @@ A standalone 3D horror-survival blackjack game for Android and desktop, built wi
 ## Verification status
 
 - **Gameplay, initial encounter-event, zombie animation, and procedural audio tests:** passed in run #35.
-- **Three additional encounter events:** initial tests exposed an overlapping round-eight priority issue and a test harness that did not propagate failed assertions. Both are fixed; the latest run is verifying the corrected rules and UI.
+- **Three additional encounter events:** round-eight priority and the assertion exit code are corrected. The latest CI run exposed a shell mismatch (`sh` does not support `set -o pipefail`); the smoke-test step now explicitly uses Bash.
 - **Keyboard input controls:** compiled and scene-smoke-tested in run #33.
 - **Persistent profile progression and save migration:** implemented in commit `9f47b8b`; test expectations and opponent-defeat tracking are being corrected and revalidated.
 - **Android arm64 APK:** environment build passed in run #31; audio/settings and Windows export are being added in newer runs.

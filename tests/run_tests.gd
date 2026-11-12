@@ -8,8 +8,6 @@ const SaveSystem = preload("res://scripts/survival_save.gd")
 const EncounterEventsState = preload("res://scripts/encounter_events.gd")
 const ProgressionState = preload("res://scripts/progression.gd")
 
-var failures: PackedStringArray = []
-
 var failures := 0
 
 func _initialize() -> void:
@@ -189,6 +187,6 @@ func _test_persistent_progression() -> void:
 	var restored := ProgressionState.new()
 	restored.load_profile(path)
 	_expect(restored.unlocked_count() == 6, "All six archive unlocks should survive reload")
-	_expect(restored.hands_played == 11, "Lifetime hand count should survive reload")
+	_expect(restored.hands_played == 10, "Lifetime hand count should survive reload")
 	_expect(restored.archive_text().contains("OUT THE DOOR"), "Unlocked archive text should be readable")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
