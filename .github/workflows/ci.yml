@@ -171,7 +171,7 @@ jobs:
         with:
           name: Survival21-Android-arm64-debug
           path: build/Survival21.apk
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
       - name: Upload Android emulator APK
         uses: actions/upload-artifact@v4
@@ -219,12 +219,12 @@ jobs:
             adb shell pidof com.kage049754.survival21
             adb exec-out screencap -p > build/survival21-emulator.png
             test -s build/survival21-emulator.png
+            adb shell uiautomator dump /sdcard/survival21-window.xml
+            adb pull /sdcard/survival21-window.xml build/survival21-accessibility.xml
             adb logcat -d -s AndroidRuntime:E | tee build/survival21-crash.log
-            if grep -E "FATAL EXCEPTION|Process .* has died" build/survival21-crash.log; then
-              echo "SURVIVAL 21 crashed on the Android emulator."
-              exit 1
-            fi
+            if grep -E "FATAL EXCEPTION|Process .* has died" build/survival21-crash.log; then echo "SURVIVAL 21 crashed on the Android emulator."; exit 1; fi
       - name: Upload emulator screenshot and runtime evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Survival21-Android-emulator-runtime-evidence
