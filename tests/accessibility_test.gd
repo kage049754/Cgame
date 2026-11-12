@@ -26,6 +26,13 @@ func _initialize() -> void:
 	_expect(hit.get_node_or_null(hit.focus_next) == stand, "Keyboard focus should move from Hit to Stand")
 	_expect(stand.get_node_or_null(stand.focus_next) == double_button, "Keyboard focus should move from Stand to Double")
 	_expect(double_button.get_node_or_null(double_button.focus_next) == next_hand, "Keyboard focus should move from Double to Next Hand")
+	scene.call("_toggle_settings")
+	_expect((scene.get("settings_panel") as PanelContainer).visible, "Settings should open when toggled")
+	_expect(scene.get_viewport().gui_get_focus_owner() == ambience, "Opening settings should move focus to the first settings control")
+	scene.call("_toggle_settings")
+	_expect(not (scene.get("settings_panel") as PanelContainer).visible, "Settings should close when toggled")
+	_expect(scene.get_viewport().gui_get_focus_owner() == (scene.get("settings_button") as Button), "Closing settings should return focus to the Settings button")
+	_expect((scene.get("archive_button") as Button).accessibility_name.contains("of 6 entries unlocked"), "Archive button should expose a dynamic unlock count")
 	var ambience := scene.get("ambience_slider") as HSlider
 	var effects := scene.get("effects_slider") as HSlider
 	var scale := scene.get("ui_scale_slider") as HSlider

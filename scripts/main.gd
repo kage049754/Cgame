@@ -243,6 +243,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				_toggle_settings()
 			elif archive_dialog.visible:
 				archive_dialog.hide()
+				archive_button.grab_focus()
 	get_viewport().set_input_as_handled()
 
 func _build_table() -> void:
@@ -420,6 +421,7 @@ func _build_ui() -> void:
 	archive_dialog.dialog_text = ""
 	archive_dialog.min_size = Vector2i(520, 420)
 	ui_layer.add_child(archive_dialog)
+	archive_dialog.confirmed.connect(archive_button.grab_focus)
 	restart_button = _make_button("RESTART RUN", _on_restart)
 	restart_button.custom_minimum_size = Vector2(150, 42)
 	restart_button.visible = false
@@ -763,3 +765,8 @@ func _update_ui() -> void:
 	opponent_label.accessibility_name = opponent_label.text
 	event_label.accessibility_name = event_label.text
 	survival_label.accessibility_name = survival_label.text
+	medkit_button.accessibility_name = "Medkit, 75 chips, " + ("already used" if survival.medkit_used else "available")
+	marked_button.accessibility_name = "Marked Card, %d uses remaining" % items.marked_cards
+	bell_button.accessibility_name = "House Bell, %s" % ("active" if house_bell_active else "%d uses remaining" % items.house_bells)
+	archive_button.accessibility_name = "Survival archive, %d of 6 entries unlocked" % progression.unlocked_count()
+	restart_button.accessibility_name = "Restart run"
