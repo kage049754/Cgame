@@ -50,6 +50,12 @@ Run #53 passed:
 - Android APK export, signature, package ID, ABI, and ZIP checks.
 - Windows x86-64 export and PE format check.
 
+## Android emulator runtime
+
+- Workflow includes an x86_64 Pixel 2 emulator install/launch, active-activity check, keyboard activation, process-alive check, screenshot, and AndroidRuntime log scan.
+- The first emulator job is still being evaluated; emulator boot is capped at 5 minutes and the job at 15 minutes to avoid indefinite waiting.
+- The screenshot and runtime logs are uploaded separately from the APK artifact when the job passes.
+
 ## Not yet verified
 
 - Installation and runtime behavior on a physical Android phone.
